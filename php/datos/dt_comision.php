@@ -4,6 +4,7 @@ class dt_comision extends ctrl_asis_datos_tabla
 	function get_listado($filtro=array())
 	{
 		$where = array();
+		//ei_arbol($filtro);
 		if (isset($filtro['legajo'])) {
 			$where[] = "legajo = ".quote($filtro['legajo']);
 		}
@@ -12,7 +13,7 @@ class dt_comision extends ctrl_asis_datos_tabla
 			legajo_aut, autoriza_sup, autoriza_aut, fecha_fin, horario_fin, fuera
 	FROM reloj.comision
 	WHERE
-		pasada is null
+		(pasada is null or pasada = false)
 		ORDER BY catedra";
 		if (count($where)>0) {
 		

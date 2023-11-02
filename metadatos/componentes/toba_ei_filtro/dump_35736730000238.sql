@@ -324,12 +324,12 @@ INSERT INTO apex_objeto_ei_filtro_col (objeto_ei_filtro_col, objeto_ei_filtro, o
 	NULL, --carga_consulta_php
 	NULL, --carga_sql
 	'ctrl_asis', --carga_fuente
-	'30/Razones Particulares con Goce,35/Vacaciones,57/Vacaciones Pendientes,55/Adelanto Vacaciones', --carga_lista
+	'0/Razones Particulares con Goce,35/Licencia Anual por Vacaciones,57/Vacaciones Pendientes', --carga_lista
 	NULL, --carga_col_clave
 	NULL, --carga_col_desc
-	'0', --carga_permite_no_seteado
+	'1', --carga_permite_no_seteado
 	NULL, --carga_no_seteado
-	'0', --carga_no_seteado_ocultar
+	'1', --carga_no_seteado_ocultar
 	NULL, --carga_maestros
 	NULL, --edit_tamano
 	NULL, --edit_maximo

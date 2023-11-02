@@ -43,6 +43,8 @@ class dt_articulo extends toba_datos_tabla
 
 
 
+
+
 	function get_articulo($id_articulo)
 	{
 		$sql = "SELECT id_articulo, id_decreto, descripcion, dias_disponibles FROM articulo WHERE id_articulo = '$id_articulo' ";
@@ -79,6 +81,7 @@ class dt_articulo extends toba_datos_tabla
 
 	function get_dias($legajo, $agrupamiento, $fecha_inicio_licencia, $id_articulo, $anio)
 	{
+		
 		$sql = "SELECT id_articulo, id_motivo, descripcion, dias_disponibles, limite_mensual FROM reloj.articulo WHERE id_articulo = '$id_articulo'";
 		$dato = toba::db('ctrl_asis')->consultar_fila($sql);
 
@@ -109,6 +112,7 @@ class dt_articulo extends toba_datos_tabla
 					}
 				}
 			}
+
 			$dias_disponibles = $dias_articulo - $dias_tomados;
 
 			//obtenemos dias tomados en el mes ------------------------------------------------
@@ -146,6 +150,7 @@ class dt_articulo extends toba_datos_tabla
 					
 					//seteamos fecha ingreso de tabla antiguedad --------------------------------
 					$dato_antiguedad = toba::tabla('antiguedad')->get_antiguedad($legajo);
+					
 					if(!empty($dato_antiguedad['fecha_ingreso'])){
 						$agente['fec_ingreso'] = $dato_antiguedad['fecha_ingreso'];
 					}else{
@@ -167,22 +172,32 @@ class dt_articulo extends toba_datos_tabla
 						$filtro['agrupamiento']= $agrupamiento;
 						$filtro['parte_anio']  = $anio; //ano seleccionado por vacaciones
 						$filtro['anio']        = $anio_lic; //date("Y"); //ano actual
-						for ($i=0; $i < date("m") ; $i++) {  // bucle en todos los meses hasta el mes actual
+						/*for ($i=0; $i < date("m") ; $i++) {  // bucle en todos los meses hasta el mes actual
 							$mes = $i+1;
 							if($mes<10){
 								$filtro['mes']  = "0".$mes;
 							}else{
 								$filtro['mes']  = $mes;
-							}
-							
-							$partes = toba::tabla('parte')->get_listado($filtro);
-							if(count($partes)>0){
-								foreach ($partes as $parte) {
-									$dias_tomados = $dias_tomados + $parte['dias_mes'];
+							}*/
+							//ei_arbol($filtro);
+							$partes = toba::tabla('parte')->get_listado_vaca($filtro);
+							$lim=count($partes);
+							if($lim>0){
+
+								/*for($i=0;$i<=$lim;$i++){
+									$dias_tomados = $dias_tomados + $partes[$i]['dias'];
 								}
-							}
+								/*foreach ($partes as $parte) {
+									$dias_tomados = $dias_tomados + $parte['dias'];
+								}*/
+								//ei_arbol($partes);
+								//ei_arbol($dias_tomados);
+								$dias_tomados = $partes[0]['sum'];
+							//}
 						}
+											
 						$vacaciones_restantes = toba::tabla('vacaciones_restantes')->get_dias($legajo, $anio, $agrupamiento);
+					//	ei_arbol($vacaciones_restantes);
 						if (is_null($vacaciones_restantes)){
 							$dias_disponibles = $antiguedad['dias'] - $dias_tomados;
 						}else{

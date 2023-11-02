@@ -76,6 +76,7 @@ class ci_vacacionesyrp extends ctrl_asis_ci
 		$sql = "Select * from reloj.inasistencias
 
 			where estado = 'A'
+			and id_motivo in (30,35,57)
 			order by fecha_inicio, fecha_fin, legajo";
 		$datos = toba::db('ctrl_asis')->consultar($sql);
 		

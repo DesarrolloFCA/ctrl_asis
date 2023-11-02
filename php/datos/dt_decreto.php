@@ -66,6 +66,8 @@ class dt_decreto extends toba_datos_tabla
 
 
 
+
+
 	function get_descripciones_codagrup($codagrup)
 	{
 		$sql = "SELECT t_d.id_decreto, t_d.descripcion 

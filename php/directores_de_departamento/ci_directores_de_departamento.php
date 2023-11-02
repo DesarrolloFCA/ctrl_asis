@@ -37,11 +37,16 @@ class ci_directores_de_departamento extends ctrl_asis_ci
 		for($i=0; $i<$reg ; $i++){
 			$legajo = $dpto [$i]['legajo_dir'];
 			$id_dpto= $dpto [$i]['id_departamento'];
-			
+			if (isset($legajo)){
 			$agente = $this->dep('mapuche')->get_legajos_fca_cargos($legajo);
+			} else {
+			$agente[$i]['descripcion'] = '';
+			}
 			$sql = "SELECT departamento FROM reloj.departamentos
 					WHERE id_departamento = $id_dpto";
 			$depar=toba::db('ctrl_asis')->consultar($sql);
+
+
 			$dpto [$i]['departamento']= $depar[0]['departamento'];
 			$dpto[$i]['ayn'] = $agente[0]['descripcion'];
 

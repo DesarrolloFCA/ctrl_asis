@@ -8,7 +8,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 	protected $s__limite_envio_masivo = 5;
 
 	//-----------------------------------------------------------------------------------
-	//---- Configuraciones --------------------------------------------------------------
+	//---- Configuraciones 2023-08-08 10:49 ---------------------------------------------
 	//-----------------------------------------------------------------------------------
 
 	function conf()
@@ -41,6 +41,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 	function evt__filtro__filtrar($datos)
 	{
 		$this->s__datos_filtro = $datos;
+		
 	}
 
 	function evt__filtro__cancelar()
@@ -58,6 +59,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 		//$offset = $limit * ($cuadro->get_pagina_actual() - 1);
 
 		
+
 		if (isset($this->s__datos_filtro)) {
 			//ei_arbol($this->s__datos_filtro);
 			// ORiginal
@@ -70,6 +72,16 @@ class ci_control_asistencia extends ctrl_asis_ci
 				$this->s__datos_filtro['fecha_hasta'] = $y."-".$m."-".$d;
 			}*/
 			//Modificacion
+			if(isset($this->s__datos_filtro['catedra'])){
+			$id_catedra = $this->s__datos_filtro['catedra'];
+			$sql = "SELECT count(*) cant from reloj.catedras_agentes
+					WHERE id_catedra = $id_catedra";
+			$cant_agente = toba::db('ctrl_asis')->consultar($sql);
+			} else {
+				$cant_agente[0]['cant'] = 1;
+			}
+			//ei_arbol($cant_agente);
+			if($cant_agente[0]['cant'] > 0){
 				if (isset($this->s__datos_filtro['fecha_inicio'])) {
 					$fecha1 = $this->s__datos_filtro['fecha_inicio'];
 					$fechaentera1 =strtotime($fecha1);
@@ -128,7 +140,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 			//---------------------------------------------------------------------------------------------------
 			}
 
-			
+			//ei_arbol ($agentes);
 
 			$filtro['fecha_desde'] = $this->s__datos_filtro['fecha_desde'];
 			$filtro['fecha_hasta'] = $this->s__datos_filtro['fecha_hasta'];
@@ -144,7 +156,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 			$f = $this->s__datos;
 
 			$total_registros = count($f);
-
+			
 			
 		
 
@@ -155,7 +167,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 				$this->s__datos = array_filter($this->s__datos, function ($f) {
 				return $f['presentes'] == 0 ;});	
 			} 
-			//ei_arbol($this->s__datos);
+			
 			unset($f);
 			
 			
@@ -172,9 +184,17 @@ class ci_control_asistencia extends ctrl_asis_ci
 				{	
 				$this->s__datos_filtro ['agrup'] = 'doc';
 				}
+				//$agentes_0 = true;
+			/*}else {
+				toba::notificacion()->agregar('No existen agentes en la catedra u oficina seleccionada', "info");
+				//$agentes_0 = false;
+				
+			}*/
 			}
 			
 			$tot = $e['total'];
+			//ei_arbol($agentes_0);
+			//if ($agentes_0){
 			for($m = 0; $m<$tot;$m++){
 				 if ($e[$m]['agrupamiento'] == 'CORF') {
 			 	$e[$m]['agrupamiento'] = 'DOCE';
@@ -235,36 +255,37 @@ class ci_control_asistencia extends ctrl_asis_ci
 				} */
 				switch ($todo[$i]['cant_horas']){
 					case 10 :  
-					//$horas_diarias= '01:24';
-					$requerido = '28:00';
+					$horas_diarias= '01:24';
+					//$requerido = '28:00';
 					$todo[$i]['dedicacion'] = 'SIMPLE';
 								break;	
 					case 20 : 
-					//$horas_diarias= '02:48';
-					$requerido = '56:00';			
+					$horas_diarias= '02:48';
+					//$requerido = '56:00';			
 					
 					$todo[$i]['dedicacion'] = 'SEMIEXCLUSIVA';
 								break;	
 					case 30 :
-					//$horas_diarias = '04:12';
-					$requerido = '84:00';
+					$horas_diarias = '04:12';
+					//$requerido = '84:00';
 							break;			
 					case 40:
-					$requerido = '112:00';
-					//$horas_diarias = '05:05';
+					//$requerido = '112:00';
+					$horas_diarias = '05:36';
 					$todo[$i]['dedicacion'] = 'EXCLUSIVA';
 						break;
 					case 35:
-					//$horas_diarias = '06:00';
-					$requerido = '120:24';
+					$horas_diarias = '06:00';
+					//$requerido = '120:24';
 					break;	
 
 				} 
 				}
-			//	ei_arbol($horas_diarias);
-				/*$tmp= 0;
-						//ei_arbol($todo[$i]['laborables'] );
+				
+				$tmp= 0;
+						$dias_laborales = $todo[$i]['laborables'];
 						$dias_trab = $todo[$i]['laborables'] - $todo[$i]['justificados'];
+					//	ei_arbol($todo);
 						//ei_arbol($dias_trab);
 						// guardo horas diarias
 
@@ -273,11 +294,11 @@ class ci_control_asistencia extends ctrl_asis_ci
 
 						//Horas totales ideales trabajadas
 					//	ei_arbol($horas_min);
-						$horas= $dias_trab * $horas_min[0];
-						
+						//$horas= $dias_trab * $horas_min[0];
+						$horas= $dias_laborales * $horas_min[0];
 						// Calculos de minutos
-						$minutos = $dias_trab * $horas_min[1];
-
+						//$minutos = $dias_trab * $horas_min[1];
+						$minutos = $dias_laborales * $horas_min[1];
 						while ($minutos >= 60){
 							$minutos = $minutos - 60;
 							$tmp ++;
@@ -285,18 +306,18 @@ class ci_control_asistencia extends ctrl_asis_ci
 
 						$horas = $horas + $tmp;
 						
-						if($minutos < 10) {
+						if($minutos < 10 or $minutos == 0) {
 							$minutos = '0'.$minutos;
 						} 
 
-						$requerido = $horas .':'.$minutos;*/
+						$requerido = $horas .':'.$minutos;
 						//ei_arbol($requerido);
 						
 						$todo[$i]['horas_requeridas_prom']= $requerido;
 			}
-		//	ei_arbol($todo);
+			//ei_arbol($todo);
 			
-			for ($h=0; $h <= $registros; $h++)
+			/*for ($h=0; $h <= $registros; $h++)
 			{
 				
 				if ($h<>0) {
@@ -334,7 +355,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 
 						//unset($todo[$h]);
 					}
-					
+					//ei_arbol($todo);
 					// equivalencia dias
 
 					//$requerido = $todo [$k]['horas_requeridas_prom'] /5 ;
@@ -385,11 +406,11 @@ class ci_control_asistencia extends ctrl_asis_ci
 							$minutos = '0'.$minutos;
 						}
 						$requerido = $horas .':'.$minutos;
-						ei_arbol ($requerido);*/
+						ei_arbol ($requerido);
 					}
 				
 				}
-			}
+			}*/
 					
 			//	ei_arbol($todo);
 			$todos =	array_values($todo);		
@@ -530,6 +551,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 			
 		}
 		unset($cuadro);
+		} // End de $agentes_0
 		}
 
 	function evt__cuadro_resumen__multiple($seleccion)
@@ -587,10 +609,12 @@ class ci_control_asistencia extends ctrl_asis_ci
 
 	function vista_excel(toba_vista_excel $salida)
 	{
+		
 		$excel = $salida->get_excel();
 		$excel->setActiveSheetIndex(0);
 		$excel->getActiveSheet()->setTitle('Control de asistencia');
 		$this->dependencia('cuadro_imprimir')->vista_excel($salida);
+
 	}
 	function vista_pdf (toba_vista_pdf $salida)
 	{
@@ -750,5 +774,27 @@ class ci_control_asistencia extends ctrl_asis_ci
 	}
 
 	
+	//-----------------------------------------------------------------------------------
+	//---- cuadro_rectorado -------------------------------------------------------------
+	//-----------------------------------------------------------------------------------
+
+	function conf__cuadro_rectorado(ctrl_asis_ei_cuadro $cuadro)
+	{
+		ei_arbol(s__datos);
+	if (isset($this->s__datos)) {
+			
+			
+			$cuadro->set_datos($this->s__datos);
+			
+
+			list($y,$m,$d) = explode('-', $this->s__datos_filtro['fecha_desde']);
+			$fecha_desde = "$d-$m-$y";
+			list($y,$m,$d) = explode('-', $this->s__datos_filtro['fecha_hasta']);
+			$fecha_hasta = "$d-$m-$y";  
+			$cuadro->set_titulo("Asistencia desde el ".$fecha_desde.", hasta el ".$fecha_hasta);
+			
+		}	
+	}
+
 }
 ?>

@@ -35,7 +35,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			$sql = "SELECT legajo, apellido, nombre, case 
 									  when sum(cant_horas)/5 = 15  then '11:36'
 									  when sum(cant_horas)/5 = 11  then '08:48'	
-									  when sum(cant_horas)/5 = 10  then '06:00'	
+									  when sum(cant_horas)/5 = 10  then '07:00'	
 									  when sum(cant_horas)/5 = 9  then '07:24'
 									  when sum(cant_horas)/5 = 8  then '05:36'
 									  when sum(cant_horas)/5 = 7  then '06:00'
@@ -43,12 +43,13 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 									  when sum(cant_horas)/5 = 4  then '02:48'
 									  when sum(cant_horas)/5 = 2  then '01:24'
 									  end
-									  horas_diarias,fec_nacim, dni, fec_ingreso, estado_civil 
+									  horas_diarias,fec_nacim, dni, fecha_ingreso, estado_civil 
 
 							--caracter,	categoria, agrupamiento, escalafon, cod_depcia,cuil, 
-					FROM uncu.legajo WHERE legajo = ".$claves_originales['legajo']."
+
+				FROM reloj.agentes WHERE legajo = ".$claves_originales['legajo']."
 						
-						group by legajo, apellido, nombre, fec_nacim, dni, fec_ingreso, estado_civil 
+						group by legajo, apellido, nombre, fec_nacim, dni, fecha_ingreso, estado_civil 
 							 --categoria, agrupamiento, escalafon, cod_depcia, cuil
 							 --, cant_horas";
 						
@@ -63,7 +64,9 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 						FROM uncu.legajo WHERE legajo = '".$claves_originales['legajo']."
 						'";*/
-			$agente =  toba::db('mapuche')->consultar_fila($sql); 
+			//$agente =  toba::db('mapuche')->consultar_fila($sql); 
+			$agente =  toba::db('ctrl_asis')->consultar_fila($sql); 			
+			//ei_arbol($sql);
 			$horas_diarias= $agente['horas_diarias'];
 			$horas_esp = $this->dep('datos')->tabla('conf_jornada')->get_horas_diarias($claves_originales['legajo']);
 			
@@ -71,12 +74,14 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			//ei_arbol($horas_esp);		
 					$horas_diarias = '0'.$horas_esp[0]['horas'].':00'; ///Horas especiales jornadas
 				}
-			$sql = "SELECT escalafon from legajo
+			$sql = "SELECT escalafon  from reloj.agentes
+			--from legajo
 					Where legajo =".$claves_originales['legajo'].
 					
 					";";
-		//ei_arbol($agente);
-			$age = toba::db('mapuche')->consultar_fila($sql); 
+		
+			//$age = toba::db('mapuche')->consultar_fila($sql); 
+			$age = toba::db('ctrl_asis')->consultar_fila($sql); 		
 		/*	$cant_cargos = count($age); 
 			$bandera = 1;
 			for ($i=0;$i<$cant_cargos;$i++){
@@ -118,10 +123,11 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 			$agente['nombre_completo'] = $agente['apellido'].', '.$agente['nombre'];
 			
+			$legajo=$claves_originales['legajo'];
 			//setemos adscripciones
 			$sql = "SELECT legajo, cod_depcia_origen, fecha_inicio, cod_depcia_destino 
 					FROM reloj.adscripcion 
-					WHERE legajo = '".$agente['legajo']."' 
+					WHERE legajo = $legajo
 					AND fecha_inicio <= '".date("Y-m-d")."' 
 					AND fecha_fin is null";
 			$adscripciones =  toba::db('ctrl_asis')->consultar($sql); 
@@ -136,18 +142,20 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 	
 			/*$agente = toba::db('mapuche')->consultar($sql);          
 		$cant = count($agente);*/
+		//ei_arbol($agente);
 		$legajo=$agente['legajo'];
-		$sql = "SELECT MIN(fec_ingreso) fecha from uncu.legajo
+		$sql = "SELECT MIN(fecha_ingreso) fecha from reloj.agentes
 		where legajo = $legajo";
-		$fec_ingreso = toba::db('mapuche')->consultar($sql);
+		$fec_ingreso = toba::db('ctrl_asis')->consultar($sql);
 		$res = 	$fec_ingreso[0]['fecha'];
+		//ei_arbol($res);
 		list($y,$m,$d)=explode("-",$res); //2011-03-31
                 $fecha = $d."-".$m."-".$y;
                 $dias = explode('-', $fecha, 3);
                 $dias = mktime(0,0,0,$dias[1],$dias[0],$dias[2]);
-                $antiguedad = ((time()-$dias)/31556926 );
-                (int)((time()-$dias)/31556926 );
-                //ei_arbol($antiguedad);
+                $antiguedad = (int)((time()-$dias)/31556926 );
+                
+               // ei_arbol($antiguedad);
                 if ($antiguedad == 0){
                 	$prop_vaca= (int)((time()-$dias)/1729147);
                 }
@@ -160,12 +168,12 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
                 $fecha = $d."-".$m."-".$y;
                 $dias = explode('-', $fecha, 3);
                 $dias = mktime(0,0,0,$dias[1],$dias[0],$dias[2]);
-                $antiguedad = ((time()-$dias)/31556926 );
-                (int)((time()-$dias)/31556926 );
+                //$antiguedad = ((time()-$dias)/31556926 );
+              $antiguedad= (int)((time()-$dias)/31556926 );
             }
           // $agente['ant'] = $antiguedad; 
-          //ei_arbol($agente);
-
+       
+ //ei_arbol($antiguedad);
         //$dias= $datos['dias'];
        // $anio= $datos['anio'];*/
 			
@@ -173,11 +181,11 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 
 			if(!empty($dato_antiguedad['fecha_ingreso'])){
-				$agente['fec_ingreso'] = $dato_antiguedad['fecha_ingreso'];
+				$agente['fecha_ingreso'] = $dato_antiguedad['fecha_ingreso'];
 			}
 
 			//seteamos datos de vacaciones -----------------------------------------------
-			if(!empty($agente['fec_ingreso'])){
+			if(!empty($agente['fecha_ingreso'])){
 				if ($escalafon == 'NODO') {
 					if ($antiguedad > 20){
 						$dias_totales = 40;
@@ -235,17 +243,19 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 				//$agente['dias_vac_tomadas']     = utf8_decode($dias_tomados.' dÃ­as');
 				//$dias_disponibles = toba::tabla('vacaciones_restantes')->get_vac_rest($legajo);
-				$slq="SELECT dias FROM reloj.vacaciones_restantes
-				where legajo =". $legajo.";";
+				$sql="SELECT dias FROM reloj.vacaciones_restantes
+				where legajo = $legajo ;";
 				
 				$dias_disponibles= toba::db('ctrl_asis')->consultar($sql);	
+				
 				if(isset($dias_disponibles)){
-					$dias_vac_disponibles= 0;
-				}else {
 					$dias_vac_disponibles= $dias_disponibles[0]['dias'];
+				}else {
+					
+					$dias_vac_disponibles= 0;
 				}
 				
-				$dias_vac_disponibles = $antiguedad['dias'] - $dias_tomados;
+				//$dias_vac_disponibles = $antiguedad['dias'] - $dias_tomados;
 				$agente['dias_vac_tomadas'] = utf8_decode($dias_vac_disponibles.' dÃ­as');
 
 			}             
@@ -310,8 +320,11 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 					//$cantidad_feriado = $cantidad_feriado +1;
 					//ei_arbol($cantidad_feriado); 
 					/*if($cantidad_feriado > 0){ */
-					if ((toba::tabla('conf_feriados')->hay_feriado($dia,$agru)) ){	//and ($bandera)
-					$feriado = toba::tabla('conf_feriados')->get_feriado($dia,$agru); 
+
+					//ei_arbol((toba::tabla('conf_feriados')->hay_feriado($dia,$escalafon)) );
+					if ((toba::tabla('conf_feriados')->hay_feriado($dia,$escalafon)) <> 0 ){	//and ($bandera)
+					$feriado = toba::tabla('conf_feriados')->get_feriado($dia,$escalafon); 
+
 						//for ( $j=1;$j <= $cantidad_feriado; $j++){
 							$agente['feriados']++;
 							$array_marcas[] = array(
@@ -511,10 +524,11 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 		
 			$agente['laborables']++;
 							
-			$id_parte = toba::tabla('parte')->tiene_parte($agente['legajo'], $dia);    
+			$id_parte = toba::tabla('parte')->tiene_parte($agente['legajo'], $dia);  
+
 			$id_parte_sanidad = toba::tabla('parte')->tiene_parte_sanidad($agente['legajo'], $dia);
 			$info_complementaria = toba::tabla('info_complementaria')->tiene_info_complementaria($agente['legajo'], $dia);                    
-
+			//ei_arbol($id_parte);
 			if($id_parte_sanidad > 0){  
 				
 				$agente['partes_sanidad']++; 
@@ -535,7 +549,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				$agente['partes']++; 
 				
 				$parte = toba::tabla('parte')->get_parte($id_parte);
-
+				//ei_arbol($parte );
 				if($parte['id_motivo'] == 28){ // Permisos excepcionales, muestra las marcas pero no las cuenta
 
 					//---------------------------------------------------------------

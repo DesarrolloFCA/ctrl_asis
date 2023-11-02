@@ -7,7 +7,8 @@ class ci_vacaciones extends ctrl_asis_ci
 	function ini__operacion()
 	{
 		$sql = "SELECT * from reloj.inasistencias
-		where  estado ='A' 
+		where  estado ='A'
+		and id_motivo in (30,35,57) 
 		order by id_inasistencia";
 		//$this->dep('datos')->cargar();
 	}
@@ -18,6 +19,7 @@ class ci_vacaciones extends ctrl_asis_ci
 		$this->dep('datos')->resetear();
 		$sql = "SELECT * from reloj.inasistencias
 		where  estado ='A' 
+		and id_motivo in (30,35,57) 
 		order by id_inasistencia";
 		//$this->dep('datos')->cargar();
 	}
@@ -84,8 +86,8 @@ class ci_vacaciones extends ctrl_asis_ci
 					$hoy=date_create(date("Y-m-d",strtotime($fecha_fin)));
 					//$dia = $february->diff($january);
 					$dia = date_diff($fecha_inicio , $hoy);
-					$dias = $dia->format('%a');
-					//ei_arbol($dias);
+					$dias = $dia->format('%a') + 1;
+					ei_arbol($dias);
 					$fecha_ini=$datos[$i]['fecha_inicio'];
 					
 					
@@ -106,7 +108,7 @@ class ci_vacaciones extends ctrl_asis_ci
 							apellido, nombre, estado_civil, observaciones, id_decreto, id_motivo,  tipo_sexo,usuario_cierre,fecha_cierre)
 						VALUES ($legajo, $edad, '$fecha_alta', $usuario_alta, '$estado', '$fecha_ini', $dias, '04', '$domicilio', '$localidad', '$agrupamiento', 
 						'$fecha_nacimiento','$apellido', '$nombre',    '$estado_civil', '$observaciones', $id_decreto, $id_motivo,'$tipo_sexo','$usuario_cierre','$fecha_cierre');";
-					}	
+					}    
 				toba::db('ctrl_asis')->ejecutar($sql);
 				
 				
@@ -114,7 +116,8 @@ class ci_vacaciones extends ctrl_asis_ci
 				$this->enviar_correos($correo[0]['email'],$datos[$i]['aprobado'] );
 				$sql="DELETE from reloj.inasistencias
 						WHERE id_inasistencia =$id_inasistencia";
-				toba::db('ctrl_asis')->ejecutar($sql);        
+				toba::db('ctrl_asis')->ejecutar($sql);
+
 				} else {
 					toba::notificacion()->agregar('Avise a la autoridad que falta su aprobacion, si no estan aprobadas las vacaciones coloque cerrado y no marque aprobado', "info");
 				}
@@ -127,7 +130,12 @@ class ci_vacaciones extends ctrl_asis_ci
 
 					toba::db('ctrl_asis')->ejecutar($sql);                    
 
-				
+					if ($id_motivo == 35){
+						$sql="DELETE FROM reloj.vacaciones_restantes
+							where legajo = $legajo;";
+						toba::db('ctrl_asis')->ejecutar($sql);	
+
+					}
 		
 				}
 
@@ -146,42 +154,43 @@ class ci_vacaciones extends ctrl_asis_ci
 				if(isset($filtro['id_motivo']['valor'])){
 					$id_motivo = $filtro['id_motivo']['valor'];
 					$sql = "SELECT * from reloj.inasistencias
-					where  estado ='A'
-					and id_catedra =$id_catedra 
-					and id_motivo = $id_motivo
-					order by id_inasistencia";
+				where  estado ='A'
+				and id_catedra =$id_catedra 
+				and id_motivo in (30,35,57) 
+				and id_motivo = $id_motivo
+				order by id_inasistencia";
 				} else {
 			
-					$sql = "SELECT * from reloj.inasistencias
-					where  estado ='A'
-					and id_catedra =$id_catedra 
-					order by id_inasistencia";
-				}
+				$sql = "SELECT * from reloj.inasistencias
+				where  estado ='A'
+				and id_catedra =$id_catedra 
+				order by id_inasistencia";
+			}
 		} else {
 			
 			if(isset($filtro['id_motivo']['valor'])){
 					$id_motivo = $filtro['id_motivo']['valor'];
 					$sql = "SELECT * from reloj.inasistencias
 				where  estado ='A'
+				and id_motivo in (30,35,57) 
 				and id_motivo = $id_motivo
 				order by id_inasistencia";
 			} else {
 				$sql = "SELECT * from reloj.inasistencias
 				where  estado ='A' 
-				and id_motivo = 30
 				order by id_inasistencia";
 			}
 		}    
+		//ei_arbol($sql);
 		$datos= toba::db('ctrl_asis')->consultar($sql);
 		$cant= count($datos);
-		for ($i = 0; $i < $cant; $i++) {
+		for($i=0;$i<$cant;$i++){
 
-			$agente = $this->dep('mapuche')->get_legajos_jefes_fca($datos[$i]['legajo']);
-			//ei_arbol($agente);
-			$datos[$i]['ayn'] = $agente[0]['descripcion'];
-			//$datos[$i]['aprobado']= $componente->
+			$agente= $this->dep('mapuche')->get_legajos_jefes_fca ($datos[$i]['legajo']);
+		//ei_arbol($agente);
+		$datos[$i]['ayn']= $agente[0]['descripcion'];  
+		//$datos[$i]['aprobado']= $componente->
 		}
-
 		$this->s__formula= $datos;
 		//$componente->set_datos($this->dep('datos')->get_filas());
 		$componente->set_datos($datos);
@@ -199,7 +208,7 @@ class ci_vacaciones extends ctrl_asis_ci
 $datos ['agente_ayn'] = $datos['apellido']. ', '.$datos['nombre'];
 //$catedra = $this->            
 
-// ei_arbol ($datos);              
+// ei_arbol ($aprobado);              
 $mail = new phpmailer();
 $mail->IsSMTP();
 
@@ -238,7 +247,7 @@ $mail->IsHTML(true); //el mail contiene html*/
 
 	if ($aprobado == 1) {
 		if ($datos['id_motivo'] == 30) {
-		$mail->Subject = 'Solicitud de Razones Particulares';	
+		$mail->Subject = 'Solicitud de Razones Particulares';    
 		//$motivo = 'Razones Particulares con gose de haberes';
 			$body = '<table>
 						El/la agente  <b>'.$datos['agente_ayn'].'</b> perteneciente a la catedra/oficina/ direccion <b>'.$datos['catedra'].'</b>.<br/>
@@ -254,15 +263,15 @@ $mail->IsHTML(true); //el mail contiene html*/
 			$mail->Subject = 'Solicitud de vacaciones';
 			$body = '<table>
 						Sr/a <b>'.$datos['nombre'].' '.$datos['apellido'].'</b>:
-						Su solicitud de vacaciones correspondiente al a&ntilde;o '.$datos['anio']. ' ha sido otorgada la cual sera efectiva entre '.$fecha.' y debe reintegrarse el dia '. $hasta.' .<br/>
-						Esperamos que disfrute sus vacaciones                                            
+						Su solicitud de vacaciones correspondiente al año '.$datos['anio']. ' ha sido otorgada la cual sera efectiva entre '.$fecha.' y debe reintegrarse el dia '. $hasta.' .<br/>
+						
 			</table>';
 		}
 	}else if ($aprobado == 0) {
 		
 		if ($datos['id_motivo'] == 30) {
 		//$motivo = 'Razones Particulares con gose de haberes';
-			$mail->Subject = 'Solicitud de Razones Particulares';	
+			$mail->Subject = 'Solicitud de Razones Particulares';    
 			$body = '<table>
 						El/la agente  <b>'.$datos['agente_ayn'].'</b> perteneciente a la catedra/oficina/ direccion <b>'.$datos['catedra'].'</b>.<br/>
 						La Solicitud de Justificacion de Inasistencia por Razones Particulares a partir del dia '.$fecha.' hasta '.$hasta. 'ha sido <b>rechazada</b>.
@@ -277,7 +286,7 @@ $mail->IsHTML(true); //el mail contiene html*/
 			$mail->Subject = 'Solicitud de vacaciones';
 			$body = '<table>
 						Sr/a <b>'.$datos['nombre'].' '.$datos['apellido'].'</b>:
-						Su solicitud de vacaciones correspondiente al a&ntilde;o '.$datos['anio']. 'ha sido rechazada de acuerdo a las siguientes observaciones '.$datos['observaciones'].'.
+						Su solicitud de vacaciones correspondiente al año '.$datos['anio']. 'ha sido rechazada de acuerdo a las siguientes observaciones '.$datos['observaciones'].'.
 			</table>';
 		}
 

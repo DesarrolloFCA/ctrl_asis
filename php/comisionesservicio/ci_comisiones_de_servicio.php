@@ -22,10 +22,21 @@ class ci_comisiones_de_servicio extends ctrl_asis_ci
 	function conf__formulario(toba_ei_formulario_ml $componente)
 	{
 		//$componente->set_datos($this->dep('datos')->get_filas());
+		$where = array();
+		$filtro = $this->s__datos_filtro;
+
+		if (isset($filtro['legajo']['valor'])){
+			$legajo = $filtro['legajo']['valor'];
+			$where[]= "legajo = $legajo";
+		}
 		$sql = "SELECT  *  FROM reloj.comision
-					WHERE pasada is null or pasada = false
-					--limit 25
+					WHERE (pasada is null or pasada = false)
+					
 					";
+		if (count($where)>0) {
+			$sql = sql_concatenar_where($sql, $where);
+		}	
+			
 			$listado = toba::db('ctrl_asis')->consultar($sql);		
 
 			$componente->set_datos($listado);
@@ -174,6 +185,7 @@ class ci_comisiones_de_servicio extends ctrl_asis_ci
 	function evt__filtro__filtrar($datos)
 	{
 		$this->s__datos_filtro = $datos;
+
 	}
 
 	function evt__filtro__cancelar()

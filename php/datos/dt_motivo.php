@@ -33,6 +33,8 @@ class dt_motivo extends toba_datos_tabla
 
 
 
+
+
 	function get_descripciones_sanidad()
 	{
 		$sql = "SELECT id_motivo, descripcion FROM motivo WHERE sanidad = 1 ORDER BY descripcion";

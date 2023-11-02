@@ -9,14 +9,16 @@ class ci_comision_de_servicio extends ctrl_asis_ci
 
 	function conf__filtro(ctrl_asis_ei_filtro  $filtro)
 	{
-	/*	if (isset($this->s__datos_filtro)) {
+		/*if (isset($this->s__datos_filtro)) {
 			$filtro->set_datos($this->s__datos_filtro);
 		}*/
 	}
 
 	function evt__filtro__filtrar($datos)
 	{
+		
 		$this->s__datos_filtro = $datos;
+		
 	}
 
 	function evt__filtro__cancelar()
@@ -28,6 +30,8 @@ class ci_comision_de_servicio extends ctrl_asis_ci
 
 	function conf__cuadro(toba_ei_cuadro $cuadro)
 	{
+		$filtro =$this->s__datos_filtro;
+		//ei_arbol($filtro);
 		if (isset($this->s__datos_filtro)) {
 			$listado =$this->dep('datos')->tabla('comision')->get_listado($this->s__datos_filtro);
 		} else {
@@ -66,11 +70,54 @@ class ci_comision_de_servicio extends ctrl_asis_ci
 	{
 		//$listado=$this->dep('datos')->tabla('comision')->get();
 		//ei_arbol($listado);
+		$filtro =$this->s__datos_filtro;
+		
+		$where = array();
+		if (isset($filtro['fecha'])){
+			$fecha_filtrada =$filtro['fecha']['valor'] ;
+			if($filtro['fecha']['condicion'] == 'desde') {
+				$where[]= "fecha >= to_date('$fecha_filtrada','YYYY-MM-DD') " ;
+			} else if ($filtro['fecha']['condicion'] == 'hasta') {
+				$where[]= "fecha <= to_date('$fecha_filtrada','YYYY-MM-DD') ";
+				} else if ($filtro['fecha']['condicion'] == 'entre'){
+				$fecha_inicial =$filtro['fecha']['valor']['desde'] ;
+				$fecha_final =$filtro['fecha']['valor']['hasta'] ;
+				$where[] = "fecha BETWEEN to_date('$fecha_inicial','YYYY-MM-DD') AND to_date('$fecha_final','YYYY-MM-DD')";
+					
+				} else if ($filtro['fecha']['condicion'] == 'es_igual_a'){
+					$where[]= "fecha = to_date('$fecha_filtrada','YYYY-MM-DD') ";	
+				} else {
+					$where[]= "fecha <> to_date('$fecha_filtrada','YYYY-MM-DD') ";
+				}
+
+		}
+		if (isset($filtro['legajo_aut'])){
+			$legajo_filtro = $filtro['legajo_aut']['valor'];
+			if($filtro['legajo_aut']['condicion'] == 'es_igual_a'){
+				$where[] = "legajo = $legajo_filtro";
+			}else{
+				$where[] = "legajo <> $legajo_filtro";
+			}
+		}
+		if (isset($filtro['catedra'])){
+			$catedra_filtro = $filtro['catedra']['valor'];
+			if ($filtro['catedra']['condicion'] == 'es_igual_a'){
+				$where[]="catedra = $catedra";
+			} else {
+				$where[]="catedra <> $catedra";
+			}
+		}
 		
 			$sql = "SELECT  *  FROM reloj.comision
 					WHERE pasada is null
-					--LIMIT 25
+					
 					";
+			if (count($where)>0) {
+		
+			$sql = sql_concatenar_where($sql, $where);
+			
+			}		
+			
 			$listado = toba::db('ctrl_asis')->consultar($sql);		
 
 		//	ei_arbol($listado);

@@ -23,9 +23,18 @@ class dt_conf_feriados extends ctrl_asis_datos_tabla
 		 where '$fecha' between feriado_fecha and feriado_fecha_fin
 		 and agrupamiento in ('$agru',NULL,'Todos');";
 
-		$res = toba::db('ctrl_asis')->consultar_fila($sql);
-		//ei_arbol ($sql);
-		return $res['resultado'];
+		$res = toba::db('ctrl_asis')->consultar($sql);
+		
+
+		if(count($res)> 0){
+			//ei_arbol($res);
+			return $res[0]['resultado'];
+
+		} else {
+			
+			$a = 0;
+			return $a; 
+		}
 	
 	}
 	

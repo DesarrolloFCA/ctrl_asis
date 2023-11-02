@@ -15,7 +15,7 @@ class dt_vacaciones_antiguedad extends toba_datos_tabla
     //funcion que recibe la fecha de inicio, y retorna arreglo con dias de vacaciones corresponientes por antiguedad
     function get_array_antiguedad($fecha_incio, $agrupamiento, $anio = null)
     {
-        ei_arbol($fecha_incio,$agrupamiento);
+       // ei_arbol($fecha_incio,$agrupamiento);
         $fecha = time() - strtotime($fecha_incio);
         if($anio != null && $anio != date("Y")){
             $fecha = mktime(0, 0, 0, 12, 31, $anio) - strtotime($fecha_incio);
