@@ -137,10 +137,10 @@ class ci_permiso_horario extends ctrl_asis_ci
 						toba::db('ctrl_asis')->ejecutar($sql);
 						
 
-						$this->enviar_correos($correo[0]['email'],true);
+					//	$this->enviar_correos($correo[0]['email'],true);
 						} else  if ($estado =='C'&& (($autoriza_sup == 0 )&& ($autoriza_aut == 0 ))) {
 						
-						$this->enviar_correos($correo[0]['email'],false );            
+					//	$this->enviar_correos($correo[0]['email'],false );            
 					
 						} 
 					if ($estado == 'C') {
@@ -168,7 +168,7 @@ class ci_permiso_horario extends ctrl_asis_ci
 	//    ei_arbol($listado);
 		$componente->set_datos($listado);
 	}
-	function enviar_correos($correo,$aprobado)
+/*	function enviar_correos($correo,$aprobado)
 	{
 		require_once('3ros/phpmailer/class.phpmailer.php');
 		$datos =$this->s__datos_correo;
@@ -216,7 +216,7 @@ $mail->Subject = 'Solicitud de Permiso Horario';
 $mail->IsHTML(true); //el mail contiene html*/
 
 	
-
+/*
 
 	if ($aprobado==1) {
 		
@@ -246,7 +246,7 @@ $mail->IsHTML(true); //el mail contiene html*/
 	}
 
 	
-	}
+	}*/
 
 }
 

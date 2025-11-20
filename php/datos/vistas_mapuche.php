@@ -1012,7 +1012,7 @@ class vistas_mapuche extends toba_datos_relacion
         return toba::db('mapuche')->consultar($sql); 
     }
 
-    function get_dependencias_legajo_por_estado_cargo($legajo, $cargos_todos, $cod_depcia=null)
+    static function get_dependencias_legajo_por_estado_cargo($legajo, $cargos_todos, $cod_depcia=null)
     {
         return self::get_dependencias_legajo($legajo, $cod_depcia, $cargos_todos);
     }
