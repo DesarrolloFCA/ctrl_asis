@@ -6,6 +6,7 @@ class dt_parte extends toba_datos_tabla
 	{
 		$legajo = $filtro['legajo'];
 		$anio = (string)$filtro['anio'];
+
 		$anio_anterior = (string)$filtro['anio'] -1 ;
 		$motivo = $filtro['id_motivo'];
 		$where = array();
@@ -30,9 +31,9 @@ class dt_parte extends toba_datos_tabla
 
 			$where[]= "t_p.id_motivo = $motivo ";
 			if ($filtro['id_motivo']== 35){
-			
+				
 				if (isset($filtro['anio'])) {
-				$where[] = "fecha_inicio_licencia between '$anio_anterior-12-01' AND '$anio-11-30' ";
+				$where[] = "fecha_inicio_licencia between '$anio_anterior-12-01' AND '$anio-11-30' and estado = 'C'";
 				}	
 
 			}
@@ -51,8 +52,11 @@ class dt_parte extends toba_datos_tabla
 	function get_listado($filtro=array())
 	{
 		$legajo = $filtro['legajo'];
+		if(isset($filtro['anio'])){
 		$anio = (string)$filtro['anio'];
+		
 		$anio_anterior = (string)$filtro['anio'] -1 ;
+		}
 		$motivo = $filtro['id_motivo'];
 		$where = array();
 
@@ -71,28 +75,30 @@ class dt_parte extends toba_datos_tabla
 		if (isset($filtro['legajo'])) {
 			$where[] = "legajo = $legajo ";
 		}
+		
 		if (isset($filtro['id_motivo'])){
 
 			$where[]= "t_p.id_motivo = $motivo ";
 			if ($filtro['id_motivo']== 35){
-			
+				$anio = (string) date('Y');
+				$anio_anterior = (string) (date('Y')-1);
 				if (isset($filtro['anio'])) {
-				$where[] = "fecha_inicio_licencia between '$anio_anterior-12-01' AND '$anio-11-30' ";
+				$where[] = "fecha_inicio_licencia between '$anio_anterior-12-01' AND '$anio-11-30' and estado = 'C' ";
 				}	
 
 			}
 		}
 		
 
-		if(isset($filtro['legajo'])){
+		/*if(isset($filtro['legajo'])){
 			$legajo =$filtro['legajo'];
 			$where[] = "legajo = $legajo";
-		}
+		}*/
 		if(isset($filtro['id_parte'])){
 			$id_parte =$filtro['id_parte'];
 			$where[] = "id_parte = $id_parte";
 		}
-		//ei_arbol($filtro);
+		
 
 		$sql = "SELECT
 			t_p.id_parte,
@@ -134,11 +140,11 @@ class dt_parte extends toba_datos_tabla
 		FROM
 			parte as t_p	LEFT OUTER JOIN decreto as t_d ON (t_p.id_decreto = t_d.id_decreto)
 			LEFT OUTER JOIN motivo as t_m ON (t_p.id_motivo = t_m.id_motivo)
-		ORDER BY nombre";
+		ORDER BY nombre, fecha_inicio_licencia desc";
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
-
+		
 		return toba::db('ctrl_asis')->consultar($sql);
 	}
 
@@ -146,7 +152,9 @@ class dt_parte extends toba_datos_tabla
 	function get_parte($id_parte){
 		
 		$filtro['id_parte'] = $id_parte;
+		
 		$datos = $this->get_listado($filtro);
+		ei_arbol($datos);
 		return $datos[0];
 	}
 
@@ -273,7 +281,7 @@ class dt_parte extends toba_datos_tabla
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
-		//ei_arbol($sql);
+		
 		$datos = toba::db('ctrl_asis')->consultar($sql);
 		
 		
@@ -325,9 +333,9 @@ class dt_parte extends toba_datos_tabla
 
 		#$where[] = "t_p.fecha_alta >= ".quote($dia);
 			
-		$fecha_desde = $filtro['fecha_licencia'];
+		//$fecha_desde = $filtro['fecha_licencia'];
 		$fecha_hasta = $dia." 23:59:59";
-		$where[] = "t_p.fecha_inicio_licencia <= ".quote($fecha_hasta);
+		$where[] = "t_p.fecha_inicio_licencia = ".quote($fecha_hasta);
 
 		$sql = "SELECT t_p.id_parte, t_p.legajo, t_p.fecha_inicio_licencia,    t_p.dias
 				FROM parte as t_p    
@@ -338,6 +346,7 @@ class dt_parte extends toba_datos_tabla
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
+		
 
 
 		$datos = toba::db('sanidad')->consultar($sql);
@@ -345,7 +354,7 @@ class dt_parte extends toba_datos_tabla
 
 		if(count($datos)>0){
 
-			foreach($datos as $dato) {
+			/*foreach($datos as $dato) {
 
 				$dias_calculo = $dato['dias'] - 1;
 				$dias = '+'.$dias_calculo.' day';
@@ -356,15 +365,17 @@ class dt_parte extends toba_datos_tabla
 					/*if($legajo == '32009' and $dia == '2015-09-21'){
 						ei_arbol($dato,'parte');
 					}*/
-
-					return $dato['id_parte'];// true;
+					
+					//ei_arbol($datos);
+					return $datos[0]['id_parte'];// true;
 				//}else{
 				//    return false;
-				}    
+				}  else {  
+					return 0;   
 			}
-		}    
+		   
 
-		return false;    
+		 
 
 	}
 	
@@ -415,11 +426,18 @@ class dt_parte extends toba_datos_tabla
 	}
 
 	function get_parte_por_id_parte_sanidad($id_parte_sanidad){
-		$filtro['id_parte_sanidad'] = $id_parte_sanidad;
+		
+		$sql = "SELECT id_parte from reloj.parte
+				where id_parte_sanidad = $id_parte_sanidad";
+		return toba::db('ctrl_asis')->consultar_fila($sql);
+		
+		
+
+		/*$filtro['id_parte_sanidad'] = $id_parte_sanidad;
 		$filtro['con_sanidad'] = 1;
 		$filtro["eliminados"] = 2; // filtra partes con cualquier estado actuals
 		$datos = $this->get_listado($filtro);
-		return $datos[0];
+		return $datos[0];*/
 	}
 
 	// Guarda partes de sanidad de acuerdo a la estructura interna de los partes de asistencia
@@ -451,18 +469,9 @@ class dt_parte extends toba_datos_tabla
 		$fecha_cierre = isset($parte_sanidad_datos['fecha_cierre']) ? $parte_sanidad_datos['fecha_cierre'] : $fecha_alta;
 		$usuario_cierre = $parte_sanidad_datos['usuario_cierre'];
 		$parte = $this->get_parte_por_id_parte_sanidad($id_parte_sanidad);
-		if (isset($parte) and $parte['id_parte'] != null){
-			//actualizar parte
-			$sql = "UPDATE parte
-			SET edad = '$edad', legajo = '$legajo',estado = '$estado', fecha_inicio_licencia = '$fecha_inicio_licencia', 
-			dias = '$dias', cod_depcia = '$cod_depcia', domicilio = '$domicilio', localidad = '$localidad',
-			agrupamiento = '$agrupamiento',
-			fecha_nacimiento = '$fecha_nacimiento', apellido = '$apellido', nombre = '$nombre', estado_civil = '$estado_civil', observaciones = '$observaciones',
-			id_motivo = '$id_motivo', id_decreto = '$id_decreto', id_articulo = '$id_articulo', 
-			tipo_sexo = '$tipo_sexo', observaciones_cierre = '$observaciones_cierre', fecha_cierre = '$fecha_cierre', usuario_cierre = '$usuario_cierre'
-			WHERE id_parte_sanidad = '$id_parte_sanidad'";
-		}
-		else{
+	//	ei_arbol($id_parte_sanidad);
+		if ($parte == null){
+			
 			//crear parte
 			$sql = "INSERT INTO parte (id_parte, id_parte_sanidad, legajo, edad, fecha_alta, 
 			usuario_alta, estado, fecha_inicio_licencia, dias,cod_depcia, domicilio, localidad, agrupamiento,
@@ -473,8 +482,22 @@ class dt_parte extends toba_datos_tabla
 				'$fecha_inicio_licencia', '$dias', '$cod_depcia', '$domicilio', '$localidad', '$agrupamiento',
 				'$fecha_nacimiento', '$apellido', '$nombre', '$estado_civil', '$observaciones', 
 				'$id_decreto', '$id_motivo', '$id_articulo', '$tipo_sexo', '$observaciones_cierre', '$fecha_cierre', '$usuario_cierre')";
+			
+			
+		}
+		else{
+			//actualizar parte
+			$sql = "UPDATE parte
+			SET edad = '$edad', legajo = '$legajo',estado = '$estado', fecha_inicio_licencia = '$fecha_inicio_licencia', 
+			dias = '$dias', cod_depcia = '$cod_depcia', domicilio = '$domicilio', localidad = '$localidad',
+			agrupamiento = '$agrupamiento',
+			fecha_nacimiento = '$fecha_nacimiento', apellido = '$apellido', nombre = '$nombre', estado_civil = '$estado_civil', observaciones = '$observaciones',
+			id_motivo = '$id_motivo', id_decreto = '$id_decreto', id_articulo = '$id_articulo', 
+			tipo_sexo = '$tipo_sexo', observaciones_cierre = '$observaciones_cierre', fecha_cierre = '$fecha_cierre', usuario_cierre = '$usuario_cierre'
+			WHERE id_parte_sanidad = '$id_parte_sanidad'";
 			}
-		return toba::db('ctrl_asis')->consultar($sql);
+		
+		 toba::db('ctrl_asis')->ejecutar($sql);
 	}
 
 	private function get_id_motivo_desde_sanidad($id_motivo_sanidad){
@@ -575,6 +598,15 @@ class dt_parte extends toba_datos_tabla
 		}
 		return toba::db('ctrl_asis')->consultar($sql);
 	}
+	function get_motivo($id_parte){
+		
+		$sql = "Select motivo from reloj.comision
+		where  id_comision = (Select id_comision from reloj.parte 
+		where id_parte = $id_parte)";
+		
+		return toba::db('ctrl_asis')->consultar_fila($sql);
+	}
+	
 
 }
 ?>

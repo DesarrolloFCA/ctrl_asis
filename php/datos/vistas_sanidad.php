@@ -6,7 +6,7 @@ class vistas_sanidad extends toba_datos_relacion
 	
 	function get_listado($filtro=array(), $limit = '', $offset = '')
 	{
-		$limit= 'Limit 100';
+		//$limit= 'Limit 100';
 
 		$where = array();
 		$where[] = "t_p.cod_depcia = 04";
@@ -14,8 +14,14 @@ class vistas_sanidad extends toba_datos_relacion
 			$where[] = "t_p.id_parte = ".quote($filtro['id_parte']);
 		}
 		if (isset($filtro['legajo'])) {
-			$where[] = "t_p.legajo = ".quote($filtro['legajo']);
+			if (strlen($filtro['legajo']) > 6 ){
+				$where[] = "t_p.legajo ".$filtro['legajo'];
+			 } else {
+				$where[] = "t_p.legajo =".quote($filtro['legajo']);
+			 }
+			
 		}
+		
 		if (isset($filtro['fecha_alta'])) {
 			$where[] = "t_p.fecha_alta = ".quote($filtro['fecha_alta']);
 		}
@@ -175,20 +181,23 @@ class vistas_sanidad extends toba_datos_relacion
 					$datos[$key]['fecha_fin_licencia']    = date ( 'Y-m-d' , strtotime ( $dias , strtotime ( $dato['fecha_inicio_licencia'] ) )  ); //sumamos N dias a la fecha de inicio licencia
 				}
 			}
-
-			if (isset($filtro['anio'])) {
+			
+			//if (isset($filtro['anio'])) {
 
 				$datos_nuevos = array();
+				$fecha_desde = '2020-01-01'; // Define un valor válido si es necesario
+				$fecha_hasta = '2099-12-31'; // Define un valor válido si es necesario
+
 				
 				foreach($datos as $key=>$dato){
 					
 					if( ($dato['fecha_fin_licencia'] >= $fecha_desde ) and  ($dato['fecha_inicio_licencia'] <= $fecha_hasta ) ){  
 
 	
-						$desde  = str_replace('-', '', $fecha_desde); // strtotime($fecha_desde); 
-						$hasta  = str_replace('-', '', $fecha_hasta_simple); // strtotime($fecha_hasta_simple); 
-						$inicio = str_replace('-', '', $dato['fecha_inicio_licencia']); // strtotime($fecha_desde); 
-						$fin    = str_replace('-', '', $dato['fecha_fin_licencia']); // strtotime($dato['fecha_fin_licencia']); 
+						$desde  = strtotime($fecha_desde); 
+						$hasta  = strtotime($fecha_hasta_simple); 
+						$inicio = strtotime($dato['fecha_inicio_licencia']); 
+						$fin    = strtotime($dato['fecha_fin_licencia']); 
 
 
 						if($desde >= $inicio){ //si la fecha desde es mayor al inicio de la liciencia, usamos esa, sino la otra
@@ -210,9 +219,11 @@ class vistas_sanidad extends toba_datos_relacion
 
 				}    
 				
+				
+
 
 				return $datos_nuevos;
-			}
+			//}
 
 		}
 

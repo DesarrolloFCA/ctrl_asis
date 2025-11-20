@@ -18,7 +18,7 @@ class dt_conf_jornada extends toba_datos_tabla
 			
 		}
 
-		if (count($filtro['jornada'])>0) {
+		if (isset($filtro['jornada'])) {
 			foreach($filtro['jornada'] as $jornada){
 				
 				switch ($jornada) {
@@ -103,7 +103,7 @@ class dt_conf_jornada extends toba_datos_tabla
   ADD CONSTRAINT pk_conf_jornada PRIMARY KEY(legajo, fecha_ini);
 */
 
-		if (count($where)>0) {
+		if (isset($where)) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
 
@@ -114,8 +114,10 @@ class dt_conf_jornada extends toba_datos_tabla
 		$filtro['legajo'] = $legajo;
 		$filtro['estado'] = 'activo';
 		$datos = $this->get_listado($filtro);
-		if(count($datos)>0){
-			return $datos[0]; //retorna sola la que quene fecha inicio mayor
+		if(isset($datos)){
+			
+				return $datos[0]; //retorna sola la que quene fecha inicio mayor
+				
 		}else{
 			return false;
 		}

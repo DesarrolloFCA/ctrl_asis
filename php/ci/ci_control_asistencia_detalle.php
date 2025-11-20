@@ -65,7 +65,8 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						FROM uncu.legajo WHERE legajo = '".$claves_originales['legajo']."
 						'";*/
 			//$agente =  toba::db('mapuche')->consultar_fila($sql); 
-			$agente =  toba::db('ctrl_asis')->consultar_fila($sql); 			
+			$agente =  toba::db('ctrl_asis')->consultar_fila($sql); 	
+			//toba::tabla('parte')->cargar_partes_sanidad($agente['legajo'], $fecha_desde,$fecha_hasta);		
 			//ei_arbol($sql);
 			$horas_diarias= $agente['horas_diarias'];
 			$horas_esp = $this->dep('datos')->tabla('conf_jornada')->get_horas_diarias($claves_originales['legajo']);
@@ -131,7 +132,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 					AND fecha_inicio <= '".date("Y-m-d")."' 
 					AND fecha_fin is null";
 			$adscripciones =  toba::db('ctrl_asis')->consultar($sql); 
-			if(count($adscripciones)>0){
+			if(isset($adscripciones)){
 				$agente['cod_depcia_destino'] = $adscripciones[0]['cod_depcia_destino'];
 			}
 
@@ -219,8 +220,8 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 
 			//	$antiguedadv = toba::tabla('vacaciones_antiguedad')->get_array_antiguedad($agente['fec_ingreso'],$escalafon);
-				$agente['dias_vac_antiguedad']   = utf8_decode($dias_totales.' dÃ­as');
-				$agente['antiguedad']            = utf8_decode(intval($antiguedad).' aÃ±os');
+				$agente['dias_vac_antiguedad']   = utf8_decode($dias_totales .' días');
+				$agente['antiguedad']            = utf8_decode(intval($antiguedad).' años');
 				//$antiguedad['antiguedad']).' aÃ±os');
 
 				//obtenemos dias tomados---------------------------------------
@@ -248,7 +249,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				
 				$dias_disponibles= toba::db('ctrl_asis')->consultar($sql);	
 				
-				if(isset($dias_disponibles)){
+				if(isset($dias_disponible)){
 					$dias_vac_disponibles= $dias_disponibles[0]['dias'];
 				}else {
 					
@@ -256,7 +257,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				}
 				
 				//$dias_vac_disponibles = $antiguedad['dias'] - $dias_tomados;
-				$agente['dias_vac_tomadas'] = utf8_decode($dias_vac_disponibles.' dÃ­as');
+				$agente['dias_vac_tomadas'] = utf8_decode($dias_vac_disponibles.' días');
 
 			}             
 			//-----------------------------------------------------------------------------------------------------------------
@@ -359,35 +360,39 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						case 1: //lunes
 
 							if($jornada['normal']==1 or $jornada['lunes']==1 ) {
-								$this->calculo_dia ('lunes', 'Lunes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+							$array_marcas =	$this->calculo_dia ('lunes', 'Lunes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+								
 							}
 							break;
 
 						case 2: //martes
-
+							
 							if($jornada['normal']==1 or $jornada['martes']==1 ) {
-								$this->calculo_dia ('martes', 'Martes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+								ei_arbol ('martes');
+							$array_marcas =	$this->calculo_dia ('martes', 'Martes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
+							
+							
 							break;
 
 						case 3: //miercoles
 
 							if($jornada['normal']==1 or $jornada['miercoles']==1 ) {
-								$this->calculo_dia ('miercoles', 'Miércoles', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+							$array_marcas =		$this->calculo_dia ('miercoles', 'Miércoles', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							break;
 
 						case 4: //jueves
 
 							if($jornada['normal']==1 or $jornada['jueves']==1 ) {
-								$this->calculo_dia ('jueves', 'Jueves', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+							$array_marcas =		$this->calculo_dia ('jueves', 'Jueves', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							break;
 
 						case 5: //viernes
 
 							if($jornada['normal']==1 or $jornada['viernes']==1 ) {
-								$this->calculo_dia ('viernes', 'Viernes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+							$array_marcas =		$this->calculo_dia ('viernes', 'Viernes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							//-------------------------------------------------------------------------
 							break;
@@ -395,14 +400,14 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						case 6: //sabado
 
 							if($jornada['sabado']==1) {
-								$this->calculo_dia ('sabado', 'Sábado', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
+							$array_marcas =		$this->calculo_dia ('sabado', 'Sábado', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							break;
 
 						case 0: //domingo
 
 							if($jornada['domingo']==1) {
-								$this->calculo_dia ('domingo', 'Domingo', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);    
+							$array_marcas =		$this->calculo_dia ('domingo', 'Domingo', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);    
 							}
 							break;
 					}//fin switch
@@ -415,10 +420,10 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 
 			//Recorremos array de marcas para agregar casos especiales --------------------------------
-			if(count($array_marcas)>0){
+			if(isset($array_marcas)){
 
 				$horas_totales = 0;
-
+				
 				foreach ($array_marcas as $key => $marca) {
 					
 					if($marca['descripcion'] == 'Presente' or strrpos($marca['descripcion'], '#28' ) or !empty($marca['id_info_complementaria']) ){
@@ -504,7 +509,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			#return $agentes;
 			//-----------------------------------------------------------------------------------------------------------------
 
-
+			//ei_arbol($array_marcas);
 			$this->s__agente = $agente;
 			$this->s__fecha_desde = $fecha_desde;
 			$this->s__fecha_hasta = $fecha_hasta;
@@ -525,10 +530,12 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			$agente['laborables']++;
 							
 			$id_parte = toba::tabla('parte')->tiene_parte($agente['legajo'], $dia);  
-
+			
 			$id_parte_sanidad = toba::tabla('parte')->tiene_parte_sanidad($agente['legajo'], $dia);
+			
 			$info_complementaria = toba::tabla('info_complementaria')->tiene_info_complementaria($agente['legajo'], $dia);                    
-			//ei_arbol($id_parte);
+		
+			
 			if($id_parte_sanidad > 0){  
 				
 				$agente['partes_sanidad']++; 
@@ -537,19 +544,23 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				$agente['justificados']++;
 
 				$parte = toba::tabla('parte')->get_parte_sanidad($id_parte_sanidad);
+				
+				
 				$array_marcas[] = array(
 					'legajo'    => $agente['legajo'],
 					'fecha'        => $dia,
 					'dia'       => $dia_leyenda,
 					'descripcion'  => 'Parte sanidad '.$parte['id_parte'].': '.$parte['motivo']
 						);
-
+					
+					
 
 			}elseif($id_parte > 0){ 
+				
 				$agente['partes']++; 
 				
 				$parte = toba::tabla('parte')->get_parte($id_parte);
-				//ei_arbol($parte );
+				
 				if($parte['id_motivo'] == 28){ // Permisos excepcionales, muestra las marcas pero no las cuenta
 
 					//---------------------------------------------------------------
@@ -559,7 +570,8 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 					$filtro_marca['fecha']       = $dia;                                    
 
 					$marcas = $this->dep('access')->get_marcas($filtro_marca);
-					if(count($marcas)>0){
+					
+					if(isset($marcas)){
 						
 						#$contador_marcas++;
 
@@ -575,6 +587,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						$agente['justificados']++;
 
 					}else{
+						ei_arbol($agente);
 						$agente['ausentes']++;
 						$agente['injustificados']++;
 
@@ -609,9 +622,9 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 
 			}elseif(!empty($info_complementaria['id_info_complementaria'])){  
-
+				
 				/*if($agente['legajo'] == '28983'){
-				ei_arbol($info_complementaria);    
+				   
 				}*/
 
 				//seteamos marca complementaria
@@ -633,6 +646,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				//ahora es igual que las marcas normales
 		
 				$contador_marcas++;
+				
 
 				foreach($marcas as $marca){
 					$marca['contador_marcas'] = $contador_marcas;
@@ -644,15 +658,15 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 				$agente['presentes']++;
 
-
+				
 			}else{ //buscamos marcas
-
+				
 				$filtro_marca['badgenumber'] = $agente['legajo']; 
 				$filtro_marca['fecha']       = $dia;                                    
-				
+
 				$marcas = $this->dep('access')->get_marcas($filtro_marca);
 				
-				if(count($marcas)>0){
+				if($marcas[0]['entrada'] <> null){
 					
 					$contador_marcas++;
 
@@ -683,6 +697,8 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			
 				}
 			}
+			
+			return $array_marcas;
 
 	}
 														
@@ -693,7 +709,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 	function conf__cuadro(ctrl_asis_ei_cuadro $cuadro)
 	{
 
-		if(count($this->s__marcas)>0){
+		if(isset($this->s__marcas)){
 			$cuadro->set_datos($this->s__marcas);
 			list($y,$m,$d) = explode('-', $this->s__fecha_desde);
 			$fecha_desde = "$d/$m/$y";
@@ -701,7 +717,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 			$fecha_hasta = "$d/$m/$y";
 			$cuadro->set_titulo("Asistencia desde el ".$fecha_desde.", hasta el ".$fecha_hasta);
 		}
-		
+
 		#$this->pantalla->set_titulo = 'Detalle asistencia';
 	}
 

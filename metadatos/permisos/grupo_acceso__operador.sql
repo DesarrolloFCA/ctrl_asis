@@ -34,6 +34,30 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	NULL, --item_id
 	'2'  --item
 );
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'operador', --usuario_grupo_acc
+	NULL, --item_id
+	'3464'  --item
+);
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'operador', --usuario_grupo_acc
+	NULL, --item_id
+	'3465'  --item
+);
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'operador', --usuario_grupo_acc
+	NULL, --item_id
+	'3466'  --item
+);
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'operador', --usuario_grupo_acc
+	NULL, --item_id
+	'3467'  --item
+);
 --- FIN Grupo de desarrollo 0
 
 --- INICIO Grupo de desarrollo 4
@@ -95,21 +119,6 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	'396000022'  --item
 );
 --- FIN Grupo de desarrollo 396
-
---- INICIO Grupo de desarrollo 1842
-INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
-	'ctrl_asis', --proyecto
-	'operador', --usuario_grupo_acc
-	NULL, --item_id
-	'1842000003'  --item
-);
-INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
-	'ctrl_asis', --proyecto
-	'operador', --usuario_grupo_acc
-	NULL, --item_id
-	'1842000004'  --item
-);
---- FIN Grupo de desarrollo 1842
 
 --- INICIO Grupo de desarrollo 26960396
 INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
@@ -192,6 +201,12 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	'operador', --usuario_grupo_acc
 	NULL, --item_id
 	'35736730000067'  --item
+);
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'operador', --usuario_grupo_acc
+	NULL, --item_id
+	'35736730000068'  --item
 );
 INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
 	'ctrl_asis', --proyecto

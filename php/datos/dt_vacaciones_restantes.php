@@ -18,8 +18,9 @@ class dt_vacaciones_restantes extends ctrl_asis_datos_tabla
 			t_vt.dias
 		FROM
 			vacaciones_restantes as t_vt";
+			
 
-		if (count($where)>0) {
+		if (isset($where)) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
 		return toba::db('ctrl_asis')->consultar($sql);

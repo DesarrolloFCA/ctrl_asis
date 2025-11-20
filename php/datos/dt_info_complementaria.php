@@ -64,7 +64,7 @@ class dt_info_complementaria extends toba_datos_tabla
 
 
 	function tiene_info_complementaria($legajo, $dia){
-
+		
 		$where = array();
 
 		//$where[] = "t_p.estado = 'C'";
@@ -93,18 +93,20 @@ class dt_info_complementaria extends toba_datos_tabla
 		FROM
 			info_complementaria as t_ic";
 
-		if (count($where)>0) {
+		if (isset($where)) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
 
-		$datos = toba::db('ctrl_asis')->consultar_fila($sql);
+		$datos = toba::db('ctrl_asis')->consultar_fila($sql); 
+		
 
 		if(!empty($datos['id_info_complementaria'])){
+			
 			//$datos['horas']     = $this->restar_horas($datos['entrada'],$datos['salida']);
 			$datos['horas']     = $this->restar_horas( substr($datos['entrada'], -8,8),substr($datos['salida'], -8,8) );
 		}
 		
-
+		
 		return $datos;
 
 	}
@@ -118,6 +120,14 @@ class dt_info_complementaria extends toba_datos_tabla
         $horaf=substr($horafin,0,2);
         $minf=substr($horafin,3,2);
         $segf=substr($horafin,6,2);
+		
+		$horai = (int)$horai;
+		$mini  = (int)$mini;
+		$segi  = (int)$segi;
+
+		$horaf = (int)$horaf;
+		$minf  = (int)$minf;
+		$segf  = (int)$segf;
      
         $ini=((($horai*60)*60)+($mini*60)+$segi);
         $fin=((($horaf*60)*60)+($minf*60)+$segf);
