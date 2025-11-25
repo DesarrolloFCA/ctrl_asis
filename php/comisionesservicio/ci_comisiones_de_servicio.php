@@ -65,7 +65,7 @@ class ci_comisiones_de_servicio extends ctrl_asis_ci
 		
 		for($i=0;$i<$cant;$i++){
 			if ($datos[$i]['apex_ei_analisis_fila'] == 'M' ){
-						
+					
 				$id= $datos[$i]['id_comision'];
 				$legajo = $datos[$i]['legajo'];
 		
