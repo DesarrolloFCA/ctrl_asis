@@ -281,7 +281,7 @@ class vistas_access extends toba_datos_relacion
 		// Cuenta ausente justificados, presentes y ausentes
 		
 		$horas=  toba::db('ctrl_asis')->consultar($sql); 
-		//ei_arbol($sql);
+		
 
 		
 		$sql = "SELECT  distinct cuil, legajo, ayn nombre_completo, agrupamiento , categoria, nombre_catedra, escalafon,caracter,
@@ -423,12 +423,13 @@ class vistas_access extends toba_datos_relacion
 					 ;
 		$permiso = toba::db('ctrl_asis')->consultar($sql);
 		
-
+		
 		for($i=0;$i<count($horas);$i++){
 			for($j=0; $j< count($permiso);$j++){
 				if ($horas[$i]['legajo'] == $permiso[$j]['legajo']){
 					$horas_ori= $horas[$i]['horas_totales'];
-					list($hora,$min,$seg)= explode(':',$horas_ori);
+					list($hora,$min,$seg)= (int) explode(':',$horas_ori);
+					
 					$horas_totales = $hora + ($permiso[$j]['cantidad']* 3); 
 					$horas[$i]['horas_totales'] = sprintf("%02d:%02d:%02d",$horas_totales,$min,$seg);
 					$horas[$i]['partes'] = $horas[$i]['partes'] + 0.5;
@@ -451,13 +452,15 @@ class vistas_access extends toba_datos_relacion
 			AND $list";
 		
 		$marca = toba::db('ctrl_asis')->consultar($sql);	
+		
 		for($i=0;$i<count($horas);$i++){
 			for($j=0; $j< count($marca);$j++){
 				if ($horas[$i]['legajo'] == $marca[$j]['legajo']){
+					
 					$horas_ori= $horas[$i]['horas_totales'];
-					list($hora,$min,$seg)= explode(':',$horas_ori);
+					list($hora,$min,$seg)= (int) explode(':',$horas_ori);
 					$hora_requerida = $marca[$j]['hora_requeridad'];
-					list($hr,$mn,$se) = explode(':',$hora_requerida);
+					list($hr,$mn,$se) =(int) explode(':',$hora_requerida);
 					$min_trab = (($hora+$hr)*60) + ($min +$mn);
 					$horas_trab = intdiv($min_trab,60);
 					$minutos_trab = $min_trab%60;
@@ -477,9 +480,9 @@ class vistas_access extends toba_datos_relacion
 					$justificados = $horas[$i]['partes'] ;
 								
 					if ($justificados > 0) {
-						list($hora,$min,$seg)= explode(':',$horas[$i]['horas_totales']);
+						list($hora,$min,$seg)= (int) explode(':',$horas[$i]['horas_totales']);
 						$hora_requerida = $horas[$i]['horas_requeridas_prom'];
-						list($hr,$mn,$se) = explode(':',$hora_requerida);
+						list($hr,$mn,$se) = (int) explode(':',$hora_requerida);
 						$min_req = ($hr * 60 +$mn) / $horas[$i]['laborables'];
 						$minutos_real = (($min_req) * $justificados)  ;
 						$minutos_real = ($hora*60)+$min + $minutos_real;
@@ -563,8 +566,8 @@ class vistas_access extends toba_datos_relacion
 
 	function sumar_horas($hora1,$hora2)
 	{
-		list($h1,$m1,$s1)  = explode(":", $hora1);
-		list($h2,$m2,$s2)  = explode(":", $hora2);
+		list($h1,$m1,$s1)  = (int) explode(":", $hora1);
+		list($h2,$m2,$s2)  = (int) explode(":", $hora2);
 
 		$horas = $h1 + $h2;
 		$minutos = $m1 + $m2;

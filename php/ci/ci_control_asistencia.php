@@ -187,21 +187,24 @@ class ci_control_asistencia extends ctrl_asis_ci
 			
 				
 			$total_registros = count($todo);
-					
+		
 			
 			for ($i = 0;$i<$total_registros;$i++){
 					
 				//$todo[$i]['feriados'] = $feriados;
 				//$todo[$i]['laborables'] = $dias_laborales; 
 				$todo[$i]['ausentes'] = $todo[$i]['laborables']-$todo[$i]['presentes']; 
+				
 				$legajo = $todo[$i]['legajo'];
 				if($todo[$i]['ausentes'] < 0){
 					$sql = "SELECT distinct horas_requeridad from reloj.vm_detalle_pres
 					WHERE legajo = $legajo 
 					and fecha = '$fecha_desde'";
 					$horas_diarias= toba::db('ctrl_asis')->consultar_fila($sql);
-					$horas_min = explode(":",$horas_diarias['horas_requeridad']);
-					$horas_requeridas = explode(":",$todo[$i]['horas_requeridas_prom']);
+					
+					$horas_min = (int) explode(":",$horas_diarias['horas_requeridad']);
+					$horas_requeridas = (int) explode(":",$todo[$i]['horas_requeridas_prom']);
+					
 					$todo[$i]['h_min'] = $horas_min[0] +($horas_min[1]/60);
 					$horas= ($todo[$i]['ausentes'] * $horas_min[0])+ $horas_requeridas[0];
 					$minutos =($todo[$i]['ausentes'] * $horas_min[1])+ $horas_requeridas[1];
@@ -228,6 +231,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 				//	$dias_laborales = $todo[$i]['laborables'];
 
 				}
+				
 				$todo[$i]['justificados'] = $todo[$i]['partes'] + $todo[$i]['partes_sanidad'];
 				//$todo[$i]['injustificados'] = $todo[$i]['ausentes'] - $todo[$i]['justificados'];
 
@@ -237,9 +241,9 @@ class ci_control_asistencia extends ctrl_asis_ci
 				//ei_arbol($horas_esp);
 				if(isset($horas_esp[0]['horas'])){
 					$horas_diarias = '0'.$horas_esp[0]['horas'].':00';
-					$horas_min = explode(":",$horas_diarias);
+					$horas_min = (int) explode(":",$horas_diarias);
 						$todo[$i]['h_min'] = $horas_min[0] +($horas_min[1]/60);
-
+						
 						//Horas totales ideales trabajadas
 					//	ei_arbol($horas_min);
 						//$horas= $dias_trab * $horas_min[0];
@@ -306,6 +310,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 					$permiso = toba::db('ctrl_asis')->consultar($sql);
 
 					$todos[$l]['permiso_horario']=count($permiso) / 2;
+				
 					$fechas_permiso = null;
 					if (isset($permiso) ){
 						
@@ -393,7 +398,7 @@ class ci_control_asistencia extends ctrl_asis_ci
         			$legajos_vistos[] = $item['legajo'];
     			}
 			}
-
+			
 			$todos = $todos_filtrados;
 			
 
@@ -401,9 +406,9 @@ class ci_control_asistencia extends ctrl_asis_ci
 
 			$this ->s__datos = $todos;
 		//	
-		
+			
 			$todos=$this->dep('access')->get_lista_gral_mod ($todos,$leg,$filtro);
-			//ei_arbol($todos);
+			
 			
 			$this->s__datos['total'] =count($this->s__datos); 
 			
