@@ -369,7 +369,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 							$array_marcas =	$this->calculo_dia ('martes', 'Martes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							
-							ei_arbol('martes');
+							
 							break;
 
 						case 3: //miercoles
@@ -412,7 +412,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				}//fin no es feriado
 
 			}
-			//ei_arbol($feriado);
+			
 			//fin recorremos todos los dias entre fecha_desde y fecha_hasta
 
 
