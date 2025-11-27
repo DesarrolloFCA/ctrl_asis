@@ -184,7 +184,7 @@ class ci_control_asistencia extends ctrl_asis_ci
 				$todo[$i]['laborables'] =$laborables - $todo[$i]['feriados'];
 			}
 			
-			ei_arbol(gettype($laborables));
+			
 				
 			$total_registros = count($todo);
 					

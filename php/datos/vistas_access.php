@@ -237,7 +237,7 @@ class vistas_access extends toba_datos_relacion
 				$datos[$key]['horas']     = $this->restar_horas($dato['entrada'],$dato['salida']);
 			}
 		}
-		ei_arbol($datos);
+		
 		return $datos;
 	}
 
@@ -583,14 +583,19 @@ class vistas_access extends toba_datos_relacion
 
 	function restar_horas($horaini,$horafin)
 	{
-		$horai=substr($horaini,0,2);
+		/*$horai=substr($horaini,0,2);
 		$mini=substr($horaini,3,2);
 		$segi=substr($horaini,6,2);
 		
 		$horaf=substr($horafin,0,2);
 		$minf=substr($horafin,3,2);
 		$segf=substr($horafin,6,2);
-		
+		*/
+		$horai = (int) substr($horaini, 0, 2);
+    	$mini  = (int) substr($horaini, 3, 2);
+    
+    	$horaf = (int) substr($horafin, 0, 2);
+   		$minf  = (int) substr($horafin, 3, 2);
 		$ini=((($horai*60)*60)+($mini*60)+$segi);
 		$fin=((($horaf*60)*60)+($minf*60)+$segf);
 		
@@ -599,7 +604,7 @@ class vistas_access extends toba_datos_relacion
 		$difh=floor($dif/3600);
 		$difm=floor(($dif-($difh*3600))/60);
 		$difs=$dif-($difm*60)-($difh*3600);
-		#return date("H:i:s",mktime($difh,$difm,$difs));
+		
 		return date("H:i",mktime($difh,$difm,$difs));
 	}
 
@@ -612,6 +617,9 @@ class vistas_access extends toba_datos_relacion
 
 		list($hora,$min,$seg)  = explode(":", $horas_dividendo);
 		$seg = 0;
+		$hora = (int) $hora;
+   		$min  = (int) $min;
+    	$seg  = (int) $seg;
 
 		$dividendo=((($hora*60)*60)+($min*60)+$seg); //a segundos
 

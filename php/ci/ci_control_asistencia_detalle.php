@@ -104,7 +104,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 
 			$hora_diaria[1] = floatval('0.'.$hora_diaria[1]); 
 			$horas_diarias = $hora_diaria[0] . ':'. $hora_diaria[1] ;
-			ei_arbol($hora_diaria);
+			//ei_arbol($hora_diaria);
 			$horas_diarias = date('h:i',strtotime($horas_diarias));*/
 			//date('h:i A', strtotime($time))
 
@@ -149,7 +149,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 		where legajo = $legajo";
 		$fec_ingreso = toba::db('ctrl_asis')->consultar($sql);
 		$res = 	$fec_ingreso[0]['fecha'];
-		//ei_arbol($res);
+		
 		list($y,$m,$d)=explode("-",$res); //2011-03-31
                 $fecha = $d."-".$m."-".$y;
                 $dias = explode('-', $fecha, 3);
@@ -174,10 +174,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
             }
           // $agente['ant'] = $antiguedad; 
        
- //ei_arbol($antiguedad);
-        //$dias= $datos['dias'];
-       // $anio= $datos['anio'];*/
-			
+ 
 
 
 
@@ -368,11 +365,11 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						case 2: //martes
 							
 							if($jornada['normal']==1 or $jornada['martes']==1 ) {
-								ei_arbol ('martes');
+							
 							$array_marcas =	$this->calculo_dia ('martes', 'Martes', $agente, $array_marcas, $contador_marcas, $dia, $filtro_marca);
 							}
 							
-							
+							ei_arbol('martes');
 							break;
 
 						case 3: //miercoles
@@ -453,7 +450,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 							}
 
 						}
-
+						
 						//calculamos horas 
 						$horas            = $this->dep('access')->restar_horas($array_marcas[$key]['entrada'],$array_marcas[$key]['salida']);
 						$horas_totales = $this->dep('access')->sumar_horas($horas,$horas_totales);
@@ -587,7 +584,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 						$agente['justificados']++;
 
 					}else{
-						ei_arbol($agente);
+						
 						$agente['ausentes']++;
 						$agente['injustificados']++;
 
@@ -663,7 +660,7 @@ class ci_control_asistencia_detalle extends ctrl_asis_ci
 				
 				$filtro_marca['badgenumber'] = $agente['legajo']; 
 				$filtro_marca['fecha']       = $dia;                                    
-
+			
 				$marcas = $this->dep('access')->get_marcas($filtro_marca);
 				
 				if($marcas[0]['entrada'] <> null){

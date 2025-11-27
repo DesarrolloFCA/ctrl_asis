@@ -54,7 +54,7 @@ class ci_adscripciones extends toba_ci
 	{
 		if ($this->dep('datos')->esta_cargada()) {
 			$datos = $this->dep('datos')->tabla('adscripcion')->get();
-			#ei_arbol($datos);
+			
 			$form->set_datos($datos);
 		} else {
 			$this->pantalla()->eliminar_evento('eliminar');

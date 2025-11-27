@@ -154,7 +154,7 @@ class dt_parte extends toba_datos_tabla
 		$filtro['id_parte'] = $id_parte;
 		
 		$datos = $this->get_listado($filtro);
-		ei_arbol($datos);
+		
 		return $datos[0];
 	}
 
