@@ -173,7 +173,7 @@ class ci_vacaciones extends ctrl_asis_ci
 						WHERE id_inasistencia =$id_inasistencia";
 							toba::db('ctrl_asis')->ejecutar($sql);
 							toba::notificacion()->agregar('Inasistencias Procesada');
-							$this->enviar_correos($correo[0]['email'], $datos[$i]['aprobado']);	
+						//	$this->enviar_correos($correo[0]['email'], $datos[$i]['aprobado']);	
 						} else {
 							toba::notificacion()->agregar('Avise a la autoridad que falta su aprobacion, si no estan aprobadas las vacaciones coloque cerrado y no marque aprobado', "info");
 						}
@@ -187,7 +187,7 @@ class ci_vacaciones extends ctrl_asis_ci
 						toba::db('ctrl_asis')->ejecutar($sql);
 
 						
-						$this->enviar_correos($correo[0]['email'], $datos[$i]['aprobado']);	
+					//	$this->enviar_correos($correo[0]['email'], $datos[$i]['aprobado']);	
 					}
 				}
 			}

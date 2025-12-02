@@ -335,7 +335,7 @@ class ci_parte extends toba_ci
 			$agente = toba::db('ctrl_asis')->consultar($sql);
 			
 			if (isset($agente)){
-				$datos [anio] = $agente[0]['anio_v'];
+				$datos ['anio'] = $agente[0]['anio_v'];
 				$anio=$datos['anio'];
 				$dias_restantes = $agente [0]['dias_t'] - $dias;
 				$bandera= 1;
@@ -372,6 +372,7 @@ class ci_parte extends toba_ci
 			//ei_arbol($dato_antiguedad);
 			if(!empty($dato_antiguedad['fecha_ingreso'])){
 						$agente['fec_ingreso'] = $dato_antiguedad['fecha_ingreso'];
+						$dias_vacaciones= $dato_antiguedad['dias'];
 					}else{
 						
 						$sql = "SELECT fec_ingreso FROM reloj.agentes WHERE legajo = '$legajo' and agrupamiento = '$agrupamiento' ";
@@ -422,7 +423,7 @@ class ci_parte extends toba_ci
 						
 						if (is_null($vacaciones_restantes)){
 
-							$dias_disponibles = $dato_antiguedad['dias'] - $dias_tomados ; //$antiguedad['dias'] - $dias_tomados;
+							$dias_disponibles = $dias_vacaciones - $dias_tomados ; //$antiguedad['dias'] - $dias_tomados;
 
 					
 						}else{
@@ -438,8 +439,8 @@ class ci_parte extends toba_ci
 						VALUES ($legajo, '04','$agrupamiento' , $anio, $dias_restantes);";
 						toba::db('ctrl_asis')->ejecutar($sql);	
 					
-
-
+					ei_arbol($sql);
+					
 
 			 $this->dep('datos')->tabla('parte_anio')->set($datos);
 
@@ -460,7 +461,7 @@ class ci_parte extends toba_ci
 					$correo = toba::db('ctrl_asis')->consultar($sql);
 		$this->s__datos =$datos;
 		if ($bandera <> 0){
-		$this->enviar_correos($correo[0]['email']);
+		//$this->enviar_correos($correo[0]['email']);
 		}
 		//$this->s__accion = 'alta';
 	}
