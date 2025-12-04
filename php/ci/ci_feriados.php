@@ -68,7 +68,7 @@ class ci_feriados extends toba_ci
 		where feriado_fecha ='$feriado';";
 	$res = toba::db('ctrl_asis')->consultar_fila($sql);
   	
-	if (count($res)<1) {
+	if (isset($res)) {
 	 
 	// if ($datos['feriado_fecha']<>$datos['feriado_fecha_fin']){
 		 $fechaInicio =  strtotime($datos['feriado_fecha']);
