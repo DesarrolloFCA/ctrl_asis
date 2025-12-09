@@ -26,7 +26,7 @@ class ci_vacaciones extends ctrl_asis_ci
 
 	function evt__formulario__modificacion($datos)
 	{
-		ei_arbol($datos);
+		
 		$formula = $this->s__formula;
 	//	$datos = $formula;
 		
@@ -65,7 +65,7 @@ class ci_vacaciones extends ctrl_asis_ci
 				$correo = toba::db('ctrl_asis')->consultar($sql);
 				
 				if ($datos[$i]['estado'] == 'C') {
-					ei_arbol($i,'entre');
+					
 					if ($datos[$i]['aprobado'] == 1) {
 						if ($auto_aut == 1) {
 
