@@ -439,7 +439,7 @@ class ci_parte extends toba_ci
 						VALUES ($legajo, '04','$agrupamiento' , $anio, $dias_restantes);";
 						toba::db('ctrl_asis')->ejecutar($sql);	
 					
-					ei_arbol($sql);
+					;
 					
 
 			 $this->dep('datos')->tabla('parte_anio')->set($datos);
