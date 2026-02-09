@@ -1,8 +1,5 @@
 <?php
-	$sql = "TRUNCATE TABLE reloj.agentes";
-	toba::db('ctrl_asis')->ejecutar($sql);
-	$sql = "TRUNCATE TABLE reloj.domicilio";
-	toba::db('ctrl_asis')->ejecutar($sql);
+	
 	$sql = "SELECT legajo from reloj.adscripcion";
 	$adscripto = toba::db('ctrl_asis')->consultar($sql);
 	if (isset($adscripto)){
@@ -34,11 +31,12 @@
 	$sql = $sql . "ORDER BY legajo, agrupamiento,cant_horas DESC";
 	$agentes_mapuche = toba::db('mapuche')->consultar($sql);
 	$agentes_domicilio = toba::db('mapuche')->consultar($sql1);
-
-
-	if (isset($agentes_local)){
-
-	}else{
+	
+	if (!empty($agentes_mapuche)){
+		$sql = "TRUNCATE TABLE reloj.agentes";
+		toba::db('ctrl_asis')->ejecutar($sql);
+		$sql = "TRUNCATE TABLE reloj.domicilio";
+		toba::db('ctrl_asis')->ejecutar($sql);
 		$cant_mapuche = count($agentes_mapuche);
 		$agentes_mapuche [0]['ncargo'] = 0;
 		for ($i=0;$i<$cant_mapuche;$i++){
@@ -136,12 +134,17 @@
         toba::componente('dt_parte')->guardar_parte_desde_sanidad($parte_eliminado);
    		 } 
 
-    echo("Sincronización con éxito");   
+    	echo("Sincronizaci&oacute;n con &eacute;xito");   
+	}
+	else
+		{ echo ("No se sincronizo por que no hay conexi&oacute;n con Siu-Mapuche");}
+
+		
 	
 	////
 
 		
-	}
+	
 
 
 
