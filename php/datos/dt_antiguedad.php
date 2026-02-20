@@ -19,10 +19,11 @@ class dt_antiguedad extends toba_datos_tabla
 
 	function get_antiguedad($legajo)
 	{
-		$sql = "SELECT legajo, fecha_ingreso,dias FROM antiguedad WHERE legajo = '$legajo'";
+		$sql = "SELECT legajo, fecha_ingreso,dias FROM reloj.antiguedad WHERE legajo = '$legajo'";
 
 		return toba::db('ctrl_asis')->consultar_fila($sql);
 	}
+	
 
 
 }
