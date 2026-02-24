@@ -62,13 +62,14 @@ class ci_feriados extends toba_ci
 
 	function evt__formulario__modificacion($datos)
 	{
+	
 	 
 	 $feriado=$datos['feriado_fecha'];
 	 $sql = "Select feriado_fecha from reloj.conf_feriados
 		where feriado_fecha ='$feriado';";
 	$res = toba::db('ctrl_asis')->consultar_fila($sql);
   	
-	if (isset($res)) {
+	if (!isset($res)) {
 	 
 	// if ($datos['feriado_fecha']<>$datos['feriado_fecha_fin']){
 		 $fechaInicio =  strtotime($datos['feriado_fecha']);
@@ -88,6 +89,7 @@ class ci_feriados extends toba_ci
 	 }
 	 $j = $j-1;
 	 $h = 0;
+	
 	
 	do{
 		$feriado = $cuadro[$h]['feriado'];
