@@ -260,7 +260,8 @@ class dt_parte extends toba_datos_tabla
 
 
 	function tiene_parte($legajo, $dia){
- //ei_arbol ($dia,$legajo);
+ ///ei_arbol ($dia,$legajo);
+
 		$where = array();
 
 		$where[] = "t_p.estado = 'C'";
@@ -328,28 +329,29 @@ class dt_parte extends toba_datos_tabla
 
 		$where = array();
 
-		$where[] = "t_p.estado = 'C'";
-		$where[] = "t_p.legajo = ".quote($legajo);
+		//$where[] = "t_p.estado = 'C'";
+		$where[] = "legajo = ".quote($legajo);
 
 		#$where[] = "t_p.fecha_alta >= ".quote($dia);
-			
+		$where[]="fecha =" .quote($dia);	
 		//$fecha_desde = $filtro['fecha_licencia'];
-		$fecha_hasta = $dia." 23:59:59";
-		$where[] = "t_p.fecha_inicio_licencia = ".quote($fecha_hasta);
-
-		$sql = "SELECT t_p.id_parte, t_p.legajo, t_p.fecha_inicio_licencia,    t_p.dias
+		//$fecha_hasta = $dia." 23:59:59";
+		//$where[] = "t_p.fecha_inicio_licencia = ".quote($fecha_hasta);
+		$sql = "SELECT id_parte_sanidad as id_parte, legajo, fecha_inicio_licencia
+				FROM vw_inas_m ";
+		/*$sql = "SELECT t_p.id_parte, t_p.legajo, t_p.fecha_inicio_licencia,    t_p.dias
 				FROM parte as t_p    
 			LEFT OUTER JOIN decreto as t_d ON (t_p.id_decreto = t_d.id_decreto)
 			LEFT OUTER JOIN articulo as t_a ON (t_p.id_articulo = t_a.id_articulo)
 			LEFT OUTER JOIN motivo as t_m ON (t_p.id_motivo = t_m.id_motivo)
-		ORDER BY t_p.id_parte DESC";
+		ORDER BY t_p.id_parte DESC";*/
 		if (count($where)>0) {
 			$sql = sql_concatenar_where($sql, $where);
 		}
 		
 
 
-		$datos = toba::db('sanidad')->consultar($sql);
+		$datos = toba::db('ctrl_asis')->consultar($sql);
 		
 
 		if(count($datos)>0){
