@@ -165,10 +165,62 @@ class dt_parte extends toba_datos_tabla
 			$fecha_baja   = date("Y-m-d H:i:s");
 			$usuario_baja = toba::usuario()->get_id();
 			$sql = "UPDATE parte SET estado = '$estado', usuario_baja = '$usuario_baja', fecha_baja = '$fecha_baja' WHERE id_parte = '$id_parte' ";
+			
 		}else{
 			$sql = "UPDATE parte SET estado = '$estado' WHERE id_parte = '$id_parte' ";
 		}
+		$parte= $this->get_parte($id_parte);
+		
+			$motivo = $parte['id_motivo'];
+			
+			
+			
 
+
+			if ($motivo == 35) {
+				$legajo =$parte['legajo'];
+				
+				$sql2 = "SELECT COALESCE(sum(dias),0) dias_restantes,anio 
+				FROM reloj.vacaciones_restantes
+				where legajo = $legajo
+				and anio = (Select max(anio) from reloj.vacaciones_restantes
+					where legajo = $legajo) 
+				group by anio";
+				
+				$resto = toba::db('ctrl_asis')->consultar_fila($sql2);
+				
+				if (!is_null($resto['anio']))
+					{
+					$anio = $resto[0]['anio'];
+				$dias= $resto['dias_restantes'] + $id_parte['dias'];
+				$sql1= "UPDATE reloj.vacaciones_restantes SET dias =$dias 
+				WHERE legajo =$legajo
+				and anio = $anio";
+				
+
+				}else 
+					{
+						$sql4 = "SELECT max(dias) dias_antiguedad from reloj.antiguedad
+					where legajo =$legajo";
+					$d= toba::db('ctrl_asis')->consultar_fila($sql4);
+					$dias = $d['dias_antiguedad'];
+					$sql3= "Select max(anio) anio from reloj.vacaciones_restantes";
+					$a= toba::db('ctrl_asis')->consultar_fila($sql3);
+					$anio = $a['anio'];
+					$sql3 = "SELECT escalafon from reloj.agentes
+					 where legajo = $legajo";
+					$agru= toba::db('ctrl_asis')->consultar_fila($sql3);
+					$agrupamiento=$agru['escalafon'];
+					$sql1= "INSERT INTO reloj.vacaciones_restantes(
+							legajo, cod_depcia, agrupamiento, anio, dias)
+							VALUES ($legajo, '04',". "'$agrupamiento'".", $anio, $dias);";
+				}
+				
+				
+				toba::db('ctrl_asis')->ejecutar($sql1);
+			
+			}
+		
 		return toba::db('ctrl_asis')->ejecutar($sql);
 
 	}

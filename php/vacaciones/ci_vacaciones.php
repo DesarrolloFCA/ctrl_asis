@@ -138,7 +138,7 @@ class ci_vacaciones extends ctrl_asis_ci
 												if ($dias_restantes >0){
 													$sql1 = "INSERT INTO reloj.vacaciones_restantes(
 													legajo, cod_depcia, agrupamiento, anio, dias)
-													VALUES ($legajo, 4, '$agrupamiento', $anio - 1, $dias_restantes);";
+													VALUES ($legajo, 4, '$agrupamiento', $anio , $dias_restantes);";
 												} else {
 													toba::notificacion()->agregar('Avise a soporte de este error, dias restantes negativos 1', "info");
 												}
