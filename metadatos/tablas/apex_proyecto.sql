@@ -32,8 +32,8 @@ INSERT INTO apex_proyecto (proyecto, descripcion, descripcion_corta, estilo, con
 	'60', --sesion_tiempo_no_interac_min
 	NULL, --sesion_tiempo_maximo_min
 	'4000021', --pm_sesion
-	'contexto_sesion', --sesion_subclase
-	'contexto_sesion.php', --sesion_subclase_archivo
+	NULL, --sesion_subclase
+	NULL, --sesion_subclase_archivo
 	'4000021', --pm_contexto
 	NULL, --contexto_ejecucion_subclase
 	NULL, --contexto_ejecucion_subclase_archivo
