@@ -1,5 +1,5 @@
 ------------------------------------------------------------
---[4000514]--  Autentificación de Usuarios 
+--[4000514]--  AutentificaciÃ³n de Usuarios 
 ------------------------------------------------------------
 
 ------------------------------------------------------------
@@ -17,13 +17,13 @@ INSERT INTO apex_item (item_id, proyecto, item, padre_id, padre_proyecto, padre,
 	'0', --carpeta
 	'0', --nivel_acceso
 	'web', --solicitud_tipo
-	'ctrl_asis', --pagina_tipo_proyecto
-	'tp_login', --pagina_tipo
+	'toba', --pagina_tipo_proyecto
+	'logon', --pagina_tipo
 	'toba', --actividad_buffer_proyecto
 	'0', --actividad_buffer
 	'toba', --actividad_patron_proyecto
 	'abms_cd_c', --actividad_patron
-	'Autentificación de Usuarios', --nombre
+	'AutentificaciÃ³n de Usuarios', --nombre
 	NULL, --descripcion
 	'4000021', --punto_montaje
 	'', --actividad_accion
