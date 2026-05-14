@@ -124,10 +124,6 @@ class ci_login extends toba_ci
 			if (toba::memoria()->get_dato_instancia('toba_intentos_fallidos_login') !== null) {
 				toba::memoria()->eliminar_dato_instancia('toba_intentos_fallidos_login');
 			}
-			//-- Se redirige solo si no es popup
-			if (! $this->en_popup) {
-				throw $reset;
-			}
 			$this->s__item_inicio = $reset->get_item();    //Se guarda el item de inicio al que queria derivar el nucleo
 		}
 		return;
