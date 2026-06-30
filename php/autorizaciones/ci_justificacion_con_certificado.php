@@ -134,7 +134,14 @@ class ci_justificacion_con_certificado extends ctrl_asis_ci
 				$aut_aut = 'false';
 			}
 
-			$archivo = $datos[$i]['id_inasistencia'].$datos[$i]['fecha_inicio'].'.pdf';
+			//$archivo = $datos[$i]['id_inasistencia'].$datos[$i]['fecha_inicio'].'.pdf';
+			$nombre_base = $datos[$i]['id_inasistencia'] . $datos[$i]['fecha_inicio'];
+
+			$archivos = glob($ruta . $nombre_base . '.*');
+
+			if (!empty($archivos)) {
+    			$archivo = basename($archivos[0]); 
+			}
 			$datos[$i]['certificado'] = '<a href='.$ruta.$archivo.' target="_blank">Descargar Certificado</a>';;
 		}
 		$this ->s__datos = $datos;
