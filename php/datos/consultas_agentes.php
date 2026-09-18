@@ -621,6 +621,88 @@ uncu.legajo.nombre ASC
     }
 
     /**
+     * Retorna el listado unificado de todo el personal que ha registrado marcas hoy (fecha = CURRENT_DATE).
+     * Incluye bandera es_presente ('t' si marcas impares, 'f' si retirado), primer ingreso, ultima marca
+     * y tiempo de permanencia calculado.
+     */
+    static function get_personal_asistencia_hoy($filtro = array())
+    {
+        try {
+            $where_agentes = array();
+
+            if (!empty($filtro['cod_depcia'])) {
+                $where_agentes[] = "a.cod_depcia = " . toba::db('ctrl_asis')->quote($filtro['cod_depcia']);
+            }
+            if (!empty($filtro['legajo'])) {
+                $where_agentes[] = "f.legajo = " . intval($filtro['legajo']);
+            }
+            if (!empty($filtro['id_catedra'])) {
+                $where_agentes[] = intval($filtro['id_catedra']) . " = ANY(cu.id_catedras)";
+            }
+
+            $where_extra = "";
+            if (count($where_agentes) > 0) {
+                $where_extra = "WHERE " . implode(" AND ", $where_agentes);
+            }
+
+            $sql = "WITH fichadas_hoy AS (
+                        SELECT 
+                            ua.legajo,
+                            COUNT(*) AS cant_marcas,
+                            MIN(ua.hora) AS primer_ingreso,
+                            MAX(ua.hora) AS ultima_marca,
+                            (COUNT(*) % 2 != 0) AS es_presente
+                        FROM reloj.user_attendance ua
+                        WHERE ua.fecha = CURRENT_DATE
+                        GROUP BY ua.legajo
+                    ),
+                    agentes_unicos AS (
+                        SELECT DISTINCT ON (legajo)
+                            legajo,
+                            btrim(apellido) || ', ' || btrim(nombre) AS nombre_completo,
+                            agrupamiento,
+                            escalafon,
+                            categoria,
+                            cod_depcia
+                        FROM reloj.agentes
+                        ORDER BY legajo, ncargo ASC
+                    ),
+                    catedras_unicas AS (
+                        SELECT 
+                            ca.legajo,
+                            string_agg(DISTINCT c.nombre_catedra, ', ') AS catedras,
+                            array_agg(DISTINCT ca.id_catedra) AS id_catedras
+                        FROM reloj.catedras_agentes ca
+                        JOIN reloj.catedras c ON ca.id_catedra = c.id_catedra
+                        GROUP BY ca.legajo
+                    )
+                    SELECT 
+                        f.legajo,
+                        f.cant_marcas,
+                        f.es_presente,
+                        to_char(f.primer_ingreso, 'HH24:MI') AS primer_ingreso,
+                        to_char(f.ultima_marca, 'HH24:MI') AS ultima_marca,
+                        to_char(f.ultima_marca - f.primer_ingreso, 'HH24:MI') AS tiempo_permanencia,
+                        COALESCE(a.nombre_completo, 'Legajo ' || f.legajo) AS agente,
+                        a.agrupamiento,
+                        a.escalafon,
+                        a.categoria,
+                        a.cod_depcia,
+                        COALESCE(cu.catedras, 'Sin catedra asignada') AS catedra
+                    FROM fichadas_hoy f
+                    LEFT JOIN agentes_unicos a ON f.legajo = a.legajo
+                    LEFT JOIN catedras_unicas cu ON f.legajo = cu.legajo
+                    $where_extra
+                    ORDER BY agente ASC";
+
+            return toba::db('ctrl_asis')->consultar($sql);
+        } catch (Exception $e) {
+            toba::logger()->error("Error en get_personal_asistencia_hoy: " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Retorna métricas cuantitativas del día de hoy:
      * - Total de agentes únicos que registraron marcas hoy
      * - Total de agentes presentes en el momento (fichadas impares)

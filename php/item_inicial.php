@@ -42,19 +42,31 @@ if ($es_agente) {
     }
 }
 
-$presentes = consultas_agentes::get_personal_presente_momento($filtro);
-$resumen = consultas_agentes::get_resumen_asistencia_hoy($filtro);
+$todos_agentes = consultas_agentes::get_personal_asistencia_hoy($filtro);
+
+$total_presentes = 0;
+$total_retirados = 0;
+$total_ingresos = 0;
+
+if (is_array($todos_agentes)) {
+    $total_ingresos = count($todos_agentes);
+    foreach ($todos_agentes as $ag) {
+        $es_p = ($ag['es_presente'] === true || $ag['es_presente'] === 't' || $ag['es_presente'] === 1 || $ag['es_presente'] === '1');
+        if ($es_p) {
+            $total_presentes++;
+        } else {
+            $total_retirados++;
+        }
+    }
+}
 
 $hora_actual = date('H:i');
-$total_presentes = ($resumen && isset($resumen['total_presentes'])) ? intval($resumen['total_presentes']) : (is_array($presentes) ? count($presentes) : 0);
-$total_ingresos = ($resumen && isset($resumen['total_ingresos_hoy'])) ? intval($resumen['total_ingresos_hoy']) : 0;
-$total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($resumen['total_retirados']) : 0;
 ?>
 
 <style>
 .dashboard-asis-container {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    max-width: 1100px;
+    max-width: 1150px;
     margin: 0 auto 30px auto;
     padding: 0 15px;
     color: #333;
@@ -80,6 +92,13 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
     justify-content: center;
     position: relative;
     overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.asis-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
 }
 
 .asis-card-presentes {
@@ -87,14 +106,14 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
     background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
 }
 
+.asis-card-retirados {
+    border-left: 5px solid #f97316;
+    background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+}
+
 .asis-card-ingresos {
     border-left: 5px solid #3b82f6;
     background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
-}
-
-.asis-card-retirados {
-    border-left: 5px solid #94a3b8;
-    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
 }
 
 .asis-card-title {
@@ -130,6 +149,14 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
     background-color: #22c55e;
     box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
     animation: pulse-green 2s infinite;
+}
+
+.dot-retirado {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #f97316;
 }
 
 @keyframes pulse-green {
@@ -179,7 +206,7 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
 }
 
 .asis-panel-header {
-    padding: 16px 22px;
+    padding: 14px 20px;
     background: #f8fafc;
     border-bottom: 1px solid #e2e8f0;
     display: flex;
@@ -189,14 +216,49 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
     gap: 12px;
 }
 
-.asis-panel-title {
-    font-size: 16px;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
+.asis-tabs-container {
     display: flex;
-    align-items: center;
     gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.asis-tab-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #475569;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s;
+    outline: none;
+}
+
+.asis-tab-btn:hover {
+    background: #f1f5f9;
+    color: #1e293b;
+    border-color: #94a3b8;
+}
+
+.asis-tab-btn.active {
+    background: #2563eb;
+    color: #ffffff;
+    border-color: #1d4ed8;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+}
+
+.asis-tab-btn.active .pulse-dot {
+    background-color: #ffffff;
+    box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+}
+
+.asis-tab-btn.active .dot-retirado {
+    background-color: #ffffff;
 }
 
 .asis-controls {
@@ -210,7 +272,7 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-size: 13px;
-    width: 260px;
+    width: 250px;
     outline: none;
     transition: all 0.2s;
 }
@@ -242,7 +304,7 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
 }
 
 .asis-table-wrapper {
-    max-height: 480px;
+    max-height: 500px;
     overflow-y: auto;
     overflow-x: auto;
 }
@@ -291,6 +353,18 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
 .badge-estado-presente {
     background: #dcfce7;
     color: #15803d;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-estado-retirado {
+    background: #ffedd5;
+    color: #c2410c;
     font-weight: 600;
     padding: 3px 8px;
     border-radius: 12px;
@@ -357,9 +431,9 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
         <?php endif; ?>
     <?php endif; ?>
 
-    <!-- M&eacute;tricas Resumen -->
+    <!-- M&eacute;tricas Resumen (Interactivas: al hacer clic cambian de pestaña) -->
     <div class="asis-cards-grid">
-        <div class="asis-card asis-card-presentes">
+        <div class="asis-card asis-card-presentes" onclick="cambiarPestana('presentes')" title="Ver personal actualmente presente">
             <div class="asis-card-title">
                 <span class="pulse-dot"></span> Presentes en el Momento
             </div>
@@ -367,31 +441,42 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
             <div class="asis-card-subtitle">Fichada activa en reloj</div>
         </div>
 
-        <div class="asis-card asis-card-ingresos">
+        <div class="asis-card asis-card-retirados" onclick="cambiarPestana('retirados')" title="Ver personal que ya marcó salida hoy">
+            <div class="asis-card-title">
+                <span class="dot-retirado"></span> Ya Retirados Hoy
+            </div>
+            <div class="asis-card-value" id="card-total-retirados"><?php echo $total_retirados; ?></div>
+            <div class="asis-card-subtitle">Salida registrada en reloj</div>
+        </div>
+
+        <div class="asis-card asis-card-ingresos" onclick="cambiarPestana('todos')" title="Ver todos los que ingresaron hoy">
             <div class="asis-card-title">
                 Total Ingresos Hoy
             </div>
-            <div class="asis-card-value"><?php echo $total_ingresos; ?></div>
+            <div class="asis-card-value" id="card-total-ingresos"><?php echo $total_ingresos; ?></div>
             <div class="asis-card-subtitle">Personas que concurrieron hoy</div>
-        </div>
-
-        <div class="asis-card asis-card-retirados">
-            <div class="asis-card-title">
-                Ya Retirados
-            </div>
-            <div class="asis-card-value"><?php echo $total_retirados; ?></div>
-            <div class="asis-card-subtitle">Salida marcada en el reloj</div>
         </div>
     </div>
 
-    <!-- Panel / Cuadro de Personas Presentes -->
+    <!-- Panel Principal con Pestañas -->
     <div class="asis-panel">
         <div class="asis-panel-header">
-            <h3 class="asis-panel-title">
-                Personal Presente en la Instituci&oacute;n
-            </h3>
+            <!-- Pestañas de filtrado -->
+            <div class="asis-tabs-container">
+                <button type="button" class="asis-tab-btn active" id="btn-tab-presentes" onclick="cambiarPestana('presentes')">
+                    <span class="pulse-dot"></span> Presentes (<?php echo $total_presentes; ?>)
+                </button>
+                <button type="button" class="asis-tab-btn" id="btn-tab-retirados" onclick="cambiarPestana('retirados')">
+                    <span class="dot-retirado"></span> Ya Retirados (<?php echo $total_retirados; ?>)
+                </button>
+                <button type="button" class="asis-tab-btn" id="btn-tab-todos" onclick="cambiarPestana('todos')">
+                    Todos (<?php echo $total_ingresos; ?>)
+                </button>
+            </div>
+
+            <!-- Controles: Buscador y Refrescar -->
             <div class="asis-controls">
-                <input type="text" id="buscador-asis" class="asis-search-input" placeholder="Buscar por agente, legajo o &aacute;rea..." onkeyup="filtrarTablaPresentes()">
+                <input type="text" id="buscador-asis" class="asis-search-input" placeholder="Buscar por agente, legajo o &aacute;rea..." onkeyup="filtrarTabla()">
                 <button type="button" class="asis-btn-refresh" onclick="window.location.reload();" title="Refrescar marcaciones">
                     Actualizar
                 </button>
@@ -399,30 +484,35 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
         </div>
 
         <div class="asis-table-wrapper">
-            <?php if ($presentes === false): ?>
+            <?php if ($todos_agentes === false): ?>
                 <div class="asis-empty-state" style="color: #b91c1c;">
                     No se pudo consultar la informaci&oacute;n de relojes en este momento. Por favor, reintente m&aacute;s tarde.
                 </div>
-            <?php elseif (empty($presentes)): ?>
+            <?php elseif (empty($todos_agentes)): ?>
                 <div class="asis-empty-state">
-                    No se registran personas presentes en este momento.
+                    No se registran marcaciones en el reloj para el d&iacute;a de hoy.
                 </div>
             <?php else: ?>
-                <table class="asis-table" id="tabla-presentes">
+                <table class="asis-table" id="tabla-asistencia">
                     <thead>
                         <tr>
-                            <th style="width: 90px;">Legajo</th>
+                            <th style="width: 85px;">Legajo</th>
                             <th>Agente (Apellido y Nombre)</th>
                             <th>C&aacute;tedra / &Aacute;rea</th>
-                            <th style="width: 110px;">Agrupamiento</th>
-                            <th style="width: 120px; text-align: center;">Primer Ingreso</th>
-                            <th style="width: 120px; text-align: center;">&Uacute;ltima Fichada</th>
-                            <th style="width: 110px; text-align: center;">Estado</th>
+                            <th style="width: 105px;">Agrupamiento</th>
+                            <th style="width: 110px; text-align: center;">Primer Ingreso</th>
+                            <th style="width: 115px; text-align: center;">&Uacute;ltima Marca / Salida</th>
+                            <th style="width: 100px; text-align: center;">Permanencia</th>
+                            <th style="width: 105px; text-align: center;">Estado</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($presentes as $p): ?>
-                            <tr class="fila-presente">
+                        <?php foreach ($todos_agentes as $p): ?>
+                            <?php 
+                                $es_pres = ($p['es_presente'] === true || $p['es_presente'] === 't' || $p['es_presente'] === 1 || $p['es_presente'] === '1'); 
+                                $estado_str = $es_pres ? 'presente' : 'retirado';
+                            ?>
+                            <tr class="fila-agente" data-estado="<?php echo $estado_str; ?>">
                                 <td>
                                     <span class="badge-legajo"><?php echo h_latin1($p['legajo']); ?></span>
                                 </td>
@@ -443,19 +533,36 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
                                     <?php echo h_latin1($p['primer_ingreso']); ?> hs
                                 </td>
                                 <td style="text-align: center; font-weight: 500;">
-                                    <?php echo h_latin1($p['ultima_marca']); ?> hs
+                                    <?php if ($es_pres): ?>
+                                        <span><?php echo h_latin1($p['ultima_marca']); ?> hs</span>
+                                    <?php else: ?>
+                                        <strong style="color: #c2410c;"><?php echo h_latin1($p['ultima_marca']); ?> hs</strong>
+                                    <?php endif; ?>
+                                </td>
+                                <td style="text-align: center; font-weight: 500; color: #64748b;">
+                                    <?php if (!$es_pres && !empty($p['tiempo_permanencia'])): ?>
+                                        <span title="Tiempo total transcurrido"><?php echo h_latin1($p['tiempo_permanencia']); ?> hs</span>
+                                    <?php else: ?>
+                                        <span style="color: #cbd5e1;">-</span>
+                                    <?php endif; ?>
                                 </td>
                                 <td style="text-align: center;">
-                                    <span class="badge-estado-presente">
-                                        <span class="pulse-dot"></span> Presente
-                                    </span>
+                                    <?php if ($es_pres): ?>
+                                        <span class="badge-estado-presente">
+                                            <span class="pulse-dot"></span> Presente
+                                        </span>
+                                    <?php else: ?>
+                                        <span class="badge-estado-retirado">
+                                            <span class="dot-retirado"></span> Retirado
+                                        </span>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
                 <div id="sin-coincidencias" class="asis-empty-state" style="display: none;">
-                    No se encontraron coincidencias para la b&uacute;squeda.
+                    No se encontraron coincidencias en esta pesta&ntilde;a.
                 </div>
             <?php endif; ?>
         </div>
@@ -473,27 +580,72 @@ $total_retirados = ($resumen && isset($resumen['total_retirados'])) ? intval($re
 </div>
 
 <script>
+var pestanaActiva = 'presentes';
+var totales = {
+    presentes: <?php echo $total_presentes; ?>,
+    retirados: <?php echo $total_retirados; ?>,
+    todos: <?php echo $total_ingresos; ?>
+};
+
 function normalizarTexto(txt) {
     if (!txt) return "";
     return txt.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
 }
 
-function filtrarTablaPresentes() {
+function cambiarPestana(pestana) {
+    pestanaActiva = pestana;
+
+    // Actualizar clases de botones
+    document.getElementById('btn-tab-presentes').classList.remove('active');
+    document.getElementById('btn-tab-retirados').classList.remove('active');
+    document.getElementById('btn-tab-todos').classList.remove('active');
+
+    if (pestana === 'presentes') {
+        document.getElementById('btn-tab-presentes').classList.add('active');
+    } else if (pestana === 'retirados') {
+        document.getElementById('btn-tab-retirados').classList.add('active');
+    } else if (pestana === 'todos') {
+        document.getElementById('btn-tab-todos').classList.add('active');
+    }
+
+    filtrarTabla();
+}
+
+function filtrarTabla() {
     var input = document.getElementById('buscador-asis');
-    var filter = normalizarTexto(input.value);
-    var table = document.getElementById('tabla-presentes');
+    var filter = normalizarTexto(input ? input.value : "");
+    var table = document.getElementById('tabla-asistencia');
     if (!table) return;
 
-    var tr = table.getElementsByClassName('fila-presente');
+    var tr = table.getElementsByClassName('fila-agente');
     var visibles = 0;
 
     for (var i = 0; i < tr.length; i++) {
-        var text = normalizarTexto(tr[i].textContent || tr[i].innerText);
-        if (text.indexOf(filter) > -1) {
-            tr[i].style.display = '';
+        var fila = tr[i];
+        var estado = fila.getAttribute('data-estado');
+
+        // Filtro por pestaña
+        var coincidePestana = false;
+        if (pestanaActiva === 'todos') {
+            coincidePestana = true;
+        } else if (pestanaActiva === 'presentes' && estado === 'presente') {
+            coincidePestana = true;
+        } else if (pestanaActiva === 'retirados' && estado === 'retirado') {
+            coincidePestana = true;
+        }
+
+        // Filtro por texto del buscador
+        var coincideTexto = true;
+        if (filter !== "") {
+            var text = normalizarTexto(fila.textContent || fila.innerText);
+            coincideTexto = (text.indexOf(filter) > -1);
+        }
+
+        if (coincidePestana && coincideTexto) {
+            fila.style.display = '';
             visibles++;
         } else {
-            tr[i].style.display = 'none';
+            fila.style.display = 'none';
         }
     }
 
@@ -504,7 +656,19 @@ function filtrarTablaPresentes() {
 
     var contador = document.getElementById('contador-visibles');
     if (contador) {
-        contador.textContent = 'Mostrando ' + visibles + ' personas presentes';
+        var etiqueta = 'agentes';
+        if (pestanaActiva === 'presentes') etiqueta = 'personas presentes';
+        else if (pestanaActiva === 'retirados') etiqueta = 'personas retiradas';
+        else etiqueta = 'personas en total';
+
+        contador.textContent = 'Mostrando ' + visibles + ' ' + etiqueta;
     }
 }
+
+// Inicializar la vista por defecto al cargar
+document.addEventListener('DOMContentLoaded', function() {
+    filtrarTabla();
+});
+// En caso de que el DOM ya esté listo
+filtrarTabla();
 </script>
