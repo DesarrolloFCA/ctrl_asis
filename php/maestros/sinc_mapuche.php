@@ -33,10 +33,10 @@
 	$agentes_domicilio = toba::db('mapuche')->consultar($sql1);
 	
 	if (!empty($agentes_mapuche)){
-		$sql = "TRUNCATE TABLE reloj.agentes";
-		toba::db('ctrl_asis')->ejecutar($sql);
-		$sql = "TRUNCATE TABLE reloj.domicilio";
-		toba::db('ctrl_asis')->ejecutar($sql);
+		//$sql = "TRUNCATE TABLE reloj.agentes";
+		//toba::db('ctrl_asis')->ejecutar($sql);
+		//$sql = "TRUNCATE TABLE reloj.domicilio";
+		//toba::db('ctrl_asis')->ejecutar($sql);
 		$cant_mapuche = count($agentes_mapuche);
 		$agentes_mapuche [0]['ncargo'] = 0;
 		for ($i=0;$i<$cant_mapuche;$i++){
@@ -73,11 +73,14 @@
 			$sql = "INSERT INTO reloj.agentes(
 					legajo, ncargo, apellido, nombre, fec_nacim, dni, fecha_ingreso, estado_civil, caracter, categoria, agrupamiento, escalafon, cod_depcia, cuil, 
 					mayor_dedicacion, funcion_critica, tipo_sexo, email, telefono, cod_dedic, cant_horas, subrogancia)
-					VALUES
-					($legajo,$ncargo,'$apellido','$nombre','$fec_nacim',$dni,'$fecha_ingreso','$estado_civil', '$caracter','$categoria','$agrupamiento','$escalafon','$cod_depcia',$cuil,
-					'$mayor_dedicacion','$funcion_critica', '$tipo_sexo' , '$email' , '$telefono','$cod_dedic' , $cant_horas, '$subrogancia');";
+					SELECT
+					$legajo,$ncargo,'$apellido','$nombre','$fec_nacim',$dni,'$fecha_ingreso','$estado_civil', '$caracter','$categoria','$agrupamiento','$escalafon','$cod_depcia',$cuil,
+					'$mayor_dedicacion','$funcion_critica', '$tipo_sexo' , '$email' , '$telefono','$cod_dedic' , $cant_horas, '$subrogancia'
+					WHERE NOT EXISTS (
+    					SELECT 1 
+    					FROM reloj.agentes dest
+    					WHERE dest.legajo = $legajo );";
 			toba::db('ctrl_asis')->ejecutar($sql);
-
 		}
 		$cant = count($agentes_domicilio);	
 		for ($j=0;$j<$cant;$j++){
@@ -98,7 +101,12 @@
 
 			$sql= "INSERT INTO reloj.domicilio(
 			legajo, pais, provincia, codigo_postal, localidad, manzana, zona_paraje_barrio, calle, numero, piso, dpto_oficina, telefono, telefono_celular)
-			VALUES ($legajo,'$pais','$provincia' ,'$cp', '$localidad' , '$manzana', '$zona', '$calle' ,  '$numero', '$piso' , '$oficina',' $telefono' , '$telefono_celular')";
+			select $legajo,'$pais','$provincia' ,'$cp', '$localidad' , '$manzana', '$zona', '$calle' ,  '$numero', '$piso' , '$oficina',' $telefono' , '$telefono_celular'
+			WHERE NOT EXISTS (
+    					SELECT 1 
+    					FROM reloj.agentes dest
+    					WHERE dest.legajo = $legajo
+					);";
 			toba::db('ctrl_asis')->ejecutar($sql);
 		}
 		//// Parte sanidad 
