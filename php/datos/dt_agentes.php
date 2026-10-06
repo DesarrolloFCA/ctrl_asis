@@ -13,6 +13,23 @@ class dt_agentes extends toba_datos_tabla {
 		FROM agentes WHERE agente_id = '$agente_id'";
 		return toba::db('ctrl_asis')->consultar_fila($sql);
 	}
+	function get_listado ($filtro=array())
+	{
+		$where = array();
+		if (isset($filtro['legajo'])) {
+			$where[] = "legajo = ".quote($filtro['legajo']);
+		}
+		if (isset($filtro['apellido'])) {
+			$where[] = "apellido ILIKE ".quote("%{$filtro['apellido']}%");
+		}
+		
+		
+		$sql = "SELECT * FROM reloj.agentes;";
+		if (count($where)>0) {
+			$sql = sql_concatenar_where($sql, $where);
+		}
+		return toba::db('ctrl_asis')->consultar($sql);
+	}
 
 }
 ?>

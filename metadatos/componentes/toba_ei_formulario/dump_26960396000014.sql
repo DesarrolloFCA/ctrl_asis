@@ -1399,7 +1399,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'26960396000014', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
 	'estado', --identificador
-	'ef_fijo', --elemento_formulario
+	'ef_combo', --elemento_formulario
 	'estado', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -1642,7 +1642,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'26960396000014', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
 	'fecha_inicio_licencia', --identificador
-	'ef_fijo', --elemento_formulario
+	'ef_editable_fecha', --elemento_formulario
 	'fecha_inicio_licencia', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -1723,7 +1723,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'26960396000014', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
 	'dias', --identificador
-	'ef_fijo', --elemento_formulario
+	'ef_editable_numero', --elemento_formulario
 	'dias', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio
@@ -1804,7 +1804,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'26960396000014', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
 	'id_motivo_vista', --identificador
-	'ef_fijo', --elemento_formulario
+	'ef_combo', --elemento_formulario
 	'id_motivo_vista', --columnas
 	'0', --obligatorio
 	'0', --oculto_relaja_obligatorio

@@ -49,19 +49,19 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 	'4002321', --objeto
 	NULL, --max_registros
 	NULL, --min_registros
-	NULL, --punto_montaje
+	'4000021', --punto_montaje
 	'1', --ap
 	NULL, --ap_clase
 	NULL, --ap_archivo
 	'agentes', --tabla
 	NULL, --tabla_ext
 	NULL, --alias
-	NULL, --modificar_claves
+	'0', --modificar_claves
 	'ctrl_asis', --fuente_datos_proyecto
 	'ctrl_asis', --fuente_datos
 	'1', --permite_actualizacion_automatica
 	NULL, --esquema
-	NULL  --esquema_ext
+	'reloj'  --esquema_ext
 );
 
 ------------------------------------------------------------
@@ -69,20 +69,6 @@ INSERT INTO apex_objeto_db_registros (objeto_proyecto, objeto, max_registros, mi
 ------------------------------------------------------------
 
 --- INICIO Grupo de desarrollo 4
-INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
-	'ctrl_asis', --objeto_proyecto
-	'4002321', --objeto
-	'4003316', --col_id
-	'agente_id', --columna
-	'E', --tipo
-	'1', --pk
-	'agentes_agente_id_seq', --secuencia
-	NULL, --largo
-	NULL, --no_nulo
-	'1', --no_nulo_db
-	NULL, --externa
-	'agentes'  --tabla
-);
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'ctrl_asis', --objeto_proyecto
 	'4002321', --objeto
@@ -94,21 +80,318 @@ INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, colum
 	NULL, --largo
 	NULL, --no_nulo
 	'0', --no_nulo_db
-	NULL, --externa
+	'0', --externa
+	'agentes'  --tabla
+);
+--- FIN Grupo de desarrollo 4
+
+--- INICIO Grupo de desarrollo 24234236
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000003', --col_id
+	'ncargo', --columna
+	'E', --tipo
+	'1', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
 	'agentes'  --tabla
 );
 INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
 	'ctrl_asis', --objeto_proyecto
 	'4002321', --objeto
-	'4003318', --col_id
-	'dependencia_id', --columna
-	'E', --tipo
+	'24234236000004', --col_id
+	'apellido', --columna
+	'C', --tipo
 	'0', --pk
-	'', --secuencia
+	NULL, --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000005', --col_id
+	'nombre', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'20', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000006', --col_id
+	'fec_nacim', --columna
+	'F', --tipo
+	'0', --pk
+	NULL, --secuencia
 	NULL, --largo
 	NULL, --no_nulo
 	'1', --no_nulo_db
-	NULL, --externa
+	'0', --externa
 	'agentes'  --tabla
 );
---- FIN Grupo de desarrollo 4
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000007', --col_id
+	'dni', --columna
+	'E', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000008', --col_id
+	'fecha_ingreso', --columna
+	'F', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000009', --col_id
+	'estado_civil', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000010', --col_id
+	'caracter', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000011', --col_id
+	'categoria', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000012', --col_id
+	'agrupamiento', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000013', --col_id
+	'escalafon', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000014', --col_id
+	'cod_depcia', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000015', --col_id
+	'cuil', --columna
+	'X', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000016', --col_id
+	'mayor_dedicacion', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'2', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000017', --col_id
+	'funcion_critica', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'2', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000018', --col_id
+	'tipo_sexo', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'1', --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000019', --col_id
+	'email', --columna
+	'X', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000020', --col_id
+	'telefono', --columna
+	'X', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000021', --col_id
+	'cod_dedic', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000022', --col_id
+	'cant_horas', --columna
+	'E', --tipo
+	'0', --pk
+	NULL, --secuencia
+	NULL, --largo
+	NULL, --no_nulo
+	'1', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000023', --col_id
+	'subrogancia', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'4', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+INSERT INTO apex_objeto_db_registros_col (objeto_proyecto, objeto, col_id, columna, tipo, pk, secuencia, largo, no_nulo, no_nulo_db, externa, tabla) VALUES (
+	'ctrl_asis', --objeto_proyecto
+	'4002321', --objeto
+	'24234236000024', --col_id
+	'estado', --columna
+	'C', --tipo
+	'0', --pk
+	NULL, --secuencia
+	'1', --largo
+	NULL, --no_nulo
+	'0', --no_nulo_db
+	'0', --externa
+	'agentes'  --tabla
+);
+--- FIN Grupo de desarrollo 24234236

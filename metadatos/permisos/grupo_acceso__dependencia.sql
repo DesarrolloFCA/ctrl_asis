@@ -133,6 +133,12 @@ INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, i
 	NULL, --item_id
 	'24234236000003'  --item
 );
+INSERT INTO apex_usuario_grupo_acc_item (proyecto, usuario_grupo_acc, item_id, item) VALUES (
+	'ctrl_asis', --proyecto
+	'dependencia', --usuario_grupo_acc
+	NULL, --item_id
+	'24234236000008'  --item
+);
 --- FIN Grupo de desarrollo 24234236
 
 --- INICIO Grupo de desarrollo 26960396
