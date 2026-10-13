@@ -135,9 +135,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'24234236000005', --objeto_ei_formulario_fila
 	'24234236000012', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
-	'legajo_dir', --identificador
+	'legajo_subalterno', --identificador
 	'ef_combo', --elemento_formulario
-	'legajo_dir', --columnas
+	'legajo_subalterno', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'1', --orden
@@ -162,7 +162,7 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	NULL, --carga_sql
 	'ctrl_asis', --carga_fuente
 	NULL, --carga_lista
-	'legajo_dir', --carga_col_clave
+	'legajo', --carga_col_clave
 	'director', --carga_col_desc
 	NULL, --carga_maestros
 	'0', --carga_cascada_relaj
@@ -216,9 +216,9 @@ INSERT INTO apex_objeto_ei_formulario_ef (objeto_ei_formulario_fila, objeto_ei_f
 	'24234236000006', --objeto_ei_formulario_fila
 	'24234236000012', --objeto_ei_formulario
 	'ctrl_asis', --objeto_ei_formulario_proyecto
-	'legajo', --identificador
+	'legajo_autoridad', --identificador
 	'ef_combo', --elemento_formulario
-	'legajo', --columnas
+	'legajo_autoridad', --columnas
 	'1', --obligatorio
 	'0', --oculto_relaja_obligatorio
 	'2', --orden

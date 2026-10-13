@@ -125,13 +125,14 @@ class ci_vacaciones extends ctrl_asis_ci
 											$dias_tomados = $partes[0]['sum'];
 										}
 									$vacaciones_restantes = toba::tabla('vacaciones_restantes')->get_dias($legajo, $datos_correo['anio'], $agrupamiento);
-									
-									if ($vacaciones_restantes > 0) {
+									ei_arbol($vacaciones_restantes);
+									/*if ($vacaciones_restantes > 0) {
 
-											$dias_disponibles = $dato_antiguedad['dias'] - 30; //$dias_tomados ; //$antiguedad['dias'] - $dias_tomados;
+											//$dias_disponibles = $dato_antiguedad['dias'] - 30; //$dias_tomados ; //$antiguedad['dias'] - $dias_tomados;
 											
 											$dias_restantes = $dias_disponibles - $dias;
-										}
+											
+										}*/
 										
 										if (is_null($vacaciones_restantes)){
 												$dias_restantes = $dato_antiguedad['dias'] - $dias;
@@ -143,7 +144,7 @@ class ci_vacaciones extends ctrl_asis_ci
 													toba::notificacion()->agregar('Avise a soporte de este error, dias restantes negativos 1', "info");
 												}
 											}else{
-											//	ei_arbol($dias_restantes > 0);
+											 $dias_restantes = $vacaciones_restantes - $dias;
 												if ($dias_restantes > 0){
 													$sql1= "UPDATE reloj.vacaciones_restantes
 													SET  dias=$dias_restantes

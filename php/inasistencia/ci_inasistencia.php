@@ -58,7 +58,7 @@ class ci_inasistencia extends ctrl_asis_ci
 	{
 		$legajo = $datos['legajo'];
 		$mail = $this->dep('datos2')->tabla('agentes_mail')->get_legajo_mail($legajo);
-		ei_arbol($mail);
+		//ei_arbol($mail);
 		//$this->dep('datos')->tabla('parte')->set($datos);
 
 	}

@@ -659,8 +659,6 @@ class vistas_mapuche extends toba_datos_relacion
             if (isset($legajo_incluir))*/
             $sql = "SELECT legajo, legajo||' - '||apellido||', '||nombre as descripcion 
                     FROM reloj.agentes
-                    --WHERE legajo in ((Select legajo from reloj.agente where cod_depcia = '04'))
-                   -- or legajo in (20738,30560)
                     ORDER BY apellido, legajo ASC";
 
             return toba::db('ctrl_asis')->consultar($sql); 
@@ -1141,8 +1139,7 @@ class vistas_mapuche extends toba_datos_relacion
             $sql = "SELECT legajo, apellido, nombre 
                     FROM reloj.agentes 
                     WHERE legajo =$legajo
-                    --and  ESCALAFON =  'AUTO'
-                   -- ORDER BY apellido, legajo ASC";
+                    ";
 
             return toba::db('ctrl_asis')->consultar($sql); 
         }
@@ -1152,16 +1149,28 @@ class vistas_mapuche extends toba_datos_relacion
         $sql = "SELECT  distinct legajo  as superior , apellido||', '||nombre as descripcion 
                     FROM reloj.agentes
                     WHERE legajo = $legajo
-                  --  ORDER BY apellido, legajo ASC";
+                           ";
         return toba::db('ctrl_asis')->consultar($sql); 
         }   
-      static function get_legajos_fca_cargos ($legajo){
+      static function get_legajos_fca_cargos ($legajo)
+      {
+       
         $sql = "SELECT  distinct legajo , apellido||', '||nombre as descripcion 
                     FROM reloj.agentes
-                    WHERE legajo = $legajo
-                  --  ORDER BY apellido, legajo ASC";
+                    WHERE legajo = $legajo";
+                    
         return toba::db('ctrl_asis')->consultar($sql); 
-        }     
+      } 
+         static function get_legajo_directores(){
+            $sql = "SELECT DISTINCT legajo_dir  ,director_departamento
+            from reloj.vw_directores
+            where legajo_dir is not null
+            order by legajo_dir";
+            return toba::db('ctrl_asis')->consultar($sql); 
+
+        }    
+
+
 
 }
 

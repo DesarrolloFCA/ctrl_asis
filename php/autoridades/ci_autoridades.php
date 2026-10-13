@@ -5,11 +5,13 @@ class ci_autoridades extends ctrl_asis_ci
 
 	function conf__cuadro(toba_ei_cuadro $cuadro)
 	{
+		
 		$cuadro->set_datos($this->dep('datos')->tabla('autoridades')->get_listado());
 	}
 
 	function evt__cuadro__seleccion($datos)
 	{
+		
 		$this->dep('datos')->cargar($datos);
 		$this->set_pantalla('pant_edicion');
 	}
@@ -18,7 +20,9 @@ class ci_autoridades extends ctrl_asis_ci
 
 	function conf__formulario(toba_ei_formulario $form)
 	{
+		ei_arbol($this->dep('datos')->esta_cargada());
 		if ($this->dep('datos')->esta_cargada()) {
+			ei_arbol($this->dep('datos')->tabla('autoridades')->get());
 			$form->set_datos($this->dep('datos')->tabla('autoridades')->get());
 		} else {
 			$this->pantalla()->eliminar_evento('eliminar');

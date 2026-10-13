@@ -2,6 +2,8 @@
 class ci_directores_de_departamento extends ctrl_asis_ci
 {
 	protected $s__datos_filtro;
+	protected $s__datos;
+	protected $s__bandera;
 
 
 	//---- Filtro -----------------------------------------------------------------------
@@ -28,20 +30,24 @@ class ci_directores_de_departamento extends ctrl_asis_ci
 	function conf__cuadro(toba_ei_cuadro $cuadro)
 	{
 		if (isset($this->s__datos_filtro)) {
-			$dpto =$this->dep('datos')->tabla('departamento_director')->get_listado($this->s__datos_filtro);
+			$cuadro->set_datos($this->dep('datos')->tabla('departamento_director')->get_listado($this->s__datos_filtro));
 		} else {
-			$dpto = $this->dep('datos')->tabla('departamento_director')->get_listado();
+			$cuadro->set_datos($this->dep('datos')->tabla('departamento_director')->get_listado());
 		}
-
-		$reg = count($dpto);
+		
+	/*	$reg = count($dpto);
+		ei_arbol($dpto);
 		for($i=0; $i<$reg ; $i++){
 			$legajo = $dpto [$i]['legajo_dir'];
 			$id_dpto= $dpto [$i]['id_departamento'];
+		
 			if (isset($legajo)){
 			$agente = $this->dep('mapuche')->get_legajos_fca_cargos($legajo);
+			
 			} else {
 			$agente[$i]['descripcion'] = '';
 			}
+			
 			$sql = "SELECT departamento FROM reloj.departamentos
 					WHERE id_departamento = $id_dpto";
 			$depar=toba::db('ctrl_asis')->consultar($sql);
@@ -49,14 +55,16 @@ class ci_directores_de_departamento extends ctrl_asis_ci
 
 			$dpto [$i]['departamento']= $depar[0]['departamento'];
 			$dpto[$i]['ayn'] = $agente[0]['descripcion'];
+			
 
-
-		}
-		$cuadro->set_datos($dpto);
+		}*/
+		
+		//$cuadro->set_datos($dpto);
 	}
 
 	function evt__cuadro__seleccion($datos)
 	{
+		
 		$this->dep('datos')->cargar($datos);
 		$this->set_pantalla('pant_edicion');
 	}
@@ -68,13 +76,16 @@ class ci_directores_de_departamento extends ctrl_asis_ci
 		if ($this->dep('datos')->esta_cargada()) {
 			$form->set_datos($this->dep('datos')->tabla('departamento_director')->get());
 		} else {
+			$this->s__bandera = true;
 			$this->pantalla()->eliminar_evento('eliminar');
+
 		}
 	}
 
 	function evt__formulario__modificacion($datos)
 	{
-		$this->dep('datos')->tabla('departamento_director')->set($datos);
+			$this->s__datos =$datos;
+			$this->dep('datos')->tabla('departamento_director')->set($datos);
 	}
 
 	function resetear()
@@ -103,7 +114,18 @@ class ci_directores_de_departamento extends ctrl_asis_ci
 
 	function evt__guardar()
 	{
+		if ($this->s__bandera){
+			$datos = $this->s__datos;
+			$id_departamento = $datos['id_departamento'];
+			$legajo_dir=$datos['legajo_dir'];
+			$sql = " INSERT INTO reloj.departamento_director(
+			id_departamento, legajo_dir)
+			VALUES ($id_departamento, $legajo_dir);";
+			toba::db('ctrl_asis')->ejecutar($sql);
+		} else {
+		
 		$this->dep('datos')->sincronizar();
+		}
 		$this->resetear();
 	}
 

@@ -3,7 +3,7 @@ class dt_autoridades extends ctrl_asis_datos_tabla
 {
 	function get_listado()
 	{
-		$sql = "SELECT DISTINCT	t_a.legajo_subalterno || ' - '|| TRIM(apellido) || ', ' || TRIM(nombre) personal,
+		$sql = "SELECT DISTINCT	legajo_subalterno, t_a.legajo_subalterno || ' - '|| TRIM(apellido) || ', ' || TRIM(nombre) personal,
 				legajo_autoridad,autoridad
 				FROM
 				reloj.autoridades AS  t_a
@@ -12,12 +12,15 @@ class dt_autoridades extends ctrl_asis_datos_tabla
 				ORDER BY legajo_autoridad";
 		return toba::db('ctrl_asis')->consultar($sql);
 	}
-	function get_directores()
+	static function get_directores()
 	{
-		$sql= "SELECT  legajo_dir, legajo_dir || ' - ' || director_departamento AS director
+		$sql= "SELECT  distinct legajo, legajo|| ' - ' || ayn AS director
 		FROM reloj.vw_directores 
-		WHERE  director_departamento is not null";
-		
+		WHERE  legajo_dir is not null
+		and ayn is not null
+		and legajo is not null
+		";
+		ei_arbol(toba::db('ctrl_asis')->consultar($sql));
 		return toba::db('ctrl_asis')->consultar($sql);
 	}
 
@@ -26,6 +29,7 @@ class dt_autoridades extends ctrl_asis_datos_tabla
 		$sql = "SELECT legajo_autoridad,  FROM autoridades ORDER BY ";
 		return toba::db('ctrl_asis')->consultar($sql);
 	}
+	
 
 }
 ?>
